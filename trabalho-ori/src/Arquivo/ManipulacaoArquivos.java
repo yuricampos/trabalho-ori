@@ -1,6 +1,5 @@
 package Arquivo;
 
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -28,10 +27,9 @@ public class ManipulacaoArquivos {
     // Palavra -> Indice (tem que gerar 2 arquivos)
     HashMap<String, Integer> indiceVocabulario = new HashMap<>();
     // indice -> lista invertida (doc,ocorrencia)
-    HashMap<Integer, HashMap<String,Integer>> indiceInvertido = new HashMap<>();
-    
+    HashMap<Integer, HashMap<String, Integer>> indiceInvertido = new HashMap<>();
 
-    public void lerArquivos(float memoria) throws FileNotFoundException, IOException, ClassNotFoundException {
+    public void lerArquivos(float memoria) throws ClassNotFoundException, FileNotFoundException, FileNotFoundException, IOException {
         String pasta = "/users/yuricampos/desktop/Desktop/workspace/arquivos/";
 
         String arquivos;
@@ -46,118 +44,93 @@ public class ManipulacaoArquivos {
             float memoriaUsada = heapSize / MegaBytes;
             float memoriaNecessaria = 3 * memoria;
             if (memoria <= 2 * memoriaNecessaria) {
-                finalArquivo++;
-                //salvar hashmap de indice -> vocabulario
-                File file = new File("indiceVocabulario" + finalArquivo);
-                FileOutputStream f = new FileOutputStream(file);
-                ObjectOutputStream s = new ObjectOutputStream(f);
-                s.writeObject(indiceVocabulario);
-                s.flush();
-                indiceVocabulario.clear();
-                //salvar hashmap de indice -> lista invertida (doc,ocorrencia)
-                File file2 = new File("indiceInvertido" + finalArquivo);
-                FileOutputStream f2 = new FileOutputStream(file2);
-                ObjectOutputStream s2 = new ObjectOutputStream(f2);
-                s2.writeObject(indiceInvertido);
-                s2.flush();
-                indiceInvertido.clear();
-
+                salvarHash();
                 if (listaDeArquivos[i].isFile()) {
                     arquivos = listaDeArquivos[i].getName();
                     if (arquivos.endsWith(".html") || arquivos.endsWith(".htm")) {
-
-                        try {
-                            try (BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(pasta + arquivos), "ISO8859-1"))) {
-                                while (br.ready()) {
-                                    int serialMem;
-                                    String linha = br.readLine().replaceAll("\\<.*?\\>", "").replaceAll("&ccedil;", "c").replaceAll("&Ccedil;", "C").replaceAll("&acirc;", "a").replaceAll("&ecirc;", "e").replaceAll("&ocirc;", "o").replaceAll("&aacute;", "a").replaceAll("&eacute;", "e").replaceAll("&iacute;", "i").replaceAll("&oacute;", "o").replaceAll("&uacute;", "u").replaceAll("&atilde;", "a").replaceAll("&otilde;", "o").replaceAll("&Acirc;", "A").replaceAll("&Ecirc;", "E").replaceAll("&Ocirc;", "O").replaceAll("&Aacute;", "A").replaceAll("&Eacute;", "E").replaceAll("&Iacute;", "I").replaceAll("&Oacute;", "O").replaceAll("&Uacute;", "U").replaceAll("&Atilde;", "A").replaceAll("&Otilde;", "O").replaceAll("&nbsp;", " ").toUpperCase();
-                                    Scanner sc = new Scanner(linha);
-                                    sc.useDelimiter("[^ABCDEFGHIJKLMNOPQRSTUVXWYZ1234567890ÇÁÉÍÓÚÃÕÂÊÎÔÛº]");
-                                    while (sc.hasNext()) {
-                                        String proximaPalavra = sc.next();
-                                        if (proximaPalavra.length() > 0) {
-                                            insertHash(proximaPalavra, arquivos);
-                                        }
-
-                                    }
-                                }
-                            }
-
-
-
-                        } catch (IOException ioe) {
-                        }
-
-
+                        salvarPalavra(arquivos, pasta);
                     }
                 }
             } else {
                 if (listaDeArquivos[i].isFile()) {
                     arquivos = listaDeArquivos[i].getName();
                     if (arquivos.endsWith(".html") || arquivos.endsWith(".htm")) {
-
-                        try {
-                            try (BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(pasta + arquivos), "ISO8859-1"))) {
-                                while (br.ready()) {
-                                    int serialMem;
-                                    String linha = br.readLine().replaceAll("\\<.*?\\>", "").replaceAll("&ccedil;", "c").replaceAll("&Ccedil;", "C").replaceAll("&acirc;", "a").replaceAll("&ecirc;", "e").replaceAll("&ocirc;", "o").replaceAll("&aacute;", "a").replaceAll("&eacute;", "e").replaceAll("&iacute;", "i").replaceAll("&oacute;", "o").replaceAll("&uacute;", "u").replaceAll("&atilde;", "a").replaceAll("&otilde;", "o").replaceAll("&Acirc;", "A").replaceAll("&Ecirc;", "E").replaceAll("&Ocirc;", "O").replaceAll("&Aacute;", "A").replaceAll("&Eacute;", "E").replaceAll("&Iacute;", "I").replaceAll("&Oacute;", "O").replaceAll("&Uacute;", "U").replaceAll("&Atilde;", "A").replaceAll("&Otilde;", "O").replaceAll("&nbsp;", " ").toUpperCase();
-                                    Scanner sc = new Scanner(linha);
-                                    sc.useDelimiter("[^ABCDEFGHIJKLMNOPQRSTUVXWYZ1234567890ÇÁÉÍÓÚÃÕÂÊÎÔÛº]");
-                                    while (sc.hasNext()) {
-                                        String proximaPalavra = sc.next();
-                                        if (proximaPalavra.length() > 0) {
-                                            insertHash(proximaPalavra, arquivos);
-                                        }
-
-                                    }
-                                }
-                            }
-
-
-
-                        } catch (IOException ioe) {
-                        }
-
+                        salvarPalavra(arquivos, pasta);
 
                     }
                 }
+            }
+        }
+    }
 
+    public void salvarHash() throws FileNotFoundException, IOException {
+        finalArquivo++;
+        //salvar hashmap de indice -> vocabulario
+        File file = new File("indiceVocabulario" + finalArquivo);
+        FileOutputStream f = new FileOutputStream(file);
+        ObjectOutputStream s = new ObjectOutputStream(f);
+        s.writeObject(indiceVocabulario);
+        s.flush();
+        indiceVocabulario.clear();
+        //salvar hashmap de indice -> lista invertida (doc,ocorrencia)
+        File file2 = new File("indiceInvertido" + finalArquivo);
+        FileOutputStream f2 = new FileOutputStream(file2);
+        ObjectOutputStream s2 = new ObjectOutputStream(f2);
+        s2.writeObject(indiceInvertido);
+        s2.flush();
+        indiceInvertido.clear();
 
+    }
+
+    public void salvarPalavra(String arquivo, String pasta) {
+        try {
+            try (BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(pasta + arquivo), "ISO8859-1"))) {
+                while (br.ready()) {
+                    int serialMem;
+                    String linha = br.readLine().replaceAll("\\<.*?\\>", "").replaceAll("&ccedil;", "c").replaceAll("&Ccedil;", "C").replaceAll("&acirc;", "a").replaceAll("&ecirc;", "e").replaceAll("&ocirc;", "o").replaceAll("&aacute;", "a").replaceAll("&eacute;", "e").replaceAll("&iacute;", "i").replaceAll("&oacute;", "o").replaceAll("&uacute;", "u").replaceAll("&atilde;", "a").replaceAll("&otilde;", "o").replaceAll("&Acirc;", "A").replaceAll("&Ecirc;", "E").replaceAll("&Ocirc;", "O").replaceAll("&Aacute;", "A").replaceAll("&Eacute;", "E").replaceAll("&Iacute;", "I").replaceAll("&Oacute;", "O").replaceAll("&Uacute;", "U").replaceAll("&Atilde;", "A").replaceAll("&Otilde;", "O").replaceAll("&nbsp;", " ").toUpperCase();
+                    Scanner sc = new Scanner(linha);
+                    sc.useDelimiter("[^ABCDEFGHIJKLMNOPQRSTUVXWYZ1234567890ÇÁÉÍÓÚÃÕÂÊÎÔÛº]");
+                    while (sc.hasNext()) {
+                        String proximaPalavra = sc.next();
+                        if (proximaPalavra.length() > 0) {
+                            insertHash(proximaPalavra, arquivo);
+                        }
+
+                    }
+                }
             }
 
 
 
+        } catch (IOException ioe) {
         }
+
     }
-    
-        public void insertHash(String palavra, String arquivo){
-                        HashMap<String, Integer> lista = new HashMap<>();
-        if(indiceVocabulario.containsKey(palavra)){
+
+    public void insertHash(String palavra, String arquivo) {
+        HashMap<String, Integer> lista = new HashMap<>();
+        if (indiceVocabulario.containsKey(palavra)) {
             Integer indice = indiceVocabulario.get(palavra);
-            if(indiceInvertido.containsKey(indice)){
+            if (indiceInvertido.containsKey(indice)) {
                 lista = indiceInvertido.get(indice);
-                if(lista.containsKey(arquivo)){
+                if (lista.containsKey(arquivo)) {
                     int ocorrencia = lista.get(arquivo);
                     ocorrencia++;
                     lista.put(arquivo, ocorrencia);
                     indiceInvertido.put(indice, lista);
                     lista.clear();
-                } else{
+                } else {
                     lista.put(arquivo, 1);
                     indiceInvertido.put(indice, lista);
                     lista.clear();
                 }
-            } else{
+            } else {
                 indicePalavra++;
                 indiceVocabulario.put(palavra, indicePalavra);
                 lista.put(arquivo, 1);
                 indiceInvertido.put(indicePalavra, lista);
-                
+
             }
         }
     }
-            public void merge(String palavra, String arquivo){
-        
-    }
 }
-    
