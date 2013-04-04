@@ -25,6 +25,8 @@ public class ManipulacaoArquivos {
     int finalArquivo = 1;
     int MegaBytes = 10241024;
     int indicePalavra = -1;
+    int qtd = 0;
+    private SalvaBytes s = new SalvaBytes();
     // Palavra -> Indice (tem que gerar 2 arquivos)
     HashMap<String, Integer> indiceVocabulario = new HashMap<>();
     // indice -> lista invertida (doc,ocorrencia)
@@ -37,6 +39,7 @@ public class ManipulacaoArquivos {
         File folder = new File(pasta);
         File[] listaDeArquivos = folder.listFiles();
         for (int i = 0; i < listaDeArquivos.length; i++) {
+            qtd++;
             //pega memoria que esta sendo usada na execucao
             float heapSize = Runtime.getRuntime().totalMemory();
             //transforma memoria em MB
@@ -52,19 +55,24 @@ public class ManipulacaoArquivos {
                 if (listaDeArquivos[i].isFile()) {
                     arquivos = listaDeArquivos[i].getName();
                     if (arquivos.endsWith(".html") || arquivos.endsWith(".htm")) {
+                        System.out.println("LENDO ARQUIVO NRO: "+qtd+" NOME: "+arquivos);
                         salvarPalavra(arquivos);
+                        
                     }
                 }
             } else {
                 if (listaDeArquivos[i].isFile()) {
                     arquivos = listaDeArquivos[i].getName();
                     if (arquivos.endsWith(".html") || arquivos.endsWith(".htm")) {
+                        System.out.println("LENDO ARQUIVO NRO: "+qtd+" NOME: "+arquivos);
                         salvarPalavra(arquivos);
 
                     }
                 }
             }
         }
+        salvarBytes();
+        s.close();
     }
 
     public void salvarHash() throws FileNotFoundException, IOException {
@@ -123,11 +131,9 @@ public class ManipulacaoArquivos {
                     ocorrencia++;
                     lista.put(arquivo, ocorrencia);
                     indiceInvertido.put(indice, lista);
-                    lista.clear();
                 } else {
                     lista.put(arquivo, 1);
                     indiceInvertido.put(indice, lista);
-                    lista.clear();
                 }
             }
         }else {
@@ -140,14 +146,16 @@ public class ManipulacaoArquivos {
         }
     
     public void salvarBytes(){
-        SalvaBytes s = new SalvaBytes();
         for(String key: indiceVocabulario.keySet()){
             HashMap<String, Integer> listaInv = new HashMap<>();
             int indice = indiceVocabulario.get(key);
             listaInv = indiceInvertido.get(indice);
-            s.save(indice, key, listaInv);
-            System.gc();       
+            s.save(indice, key, listaInv);  
+            listaInv.clear();
         }
+            
+            indiceVocabulario.clear();
+            indiceInvertido.clear();   
     }
     
 
