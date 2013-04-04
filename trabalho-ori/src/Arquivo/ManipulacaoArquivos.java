@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.ObjectOutputStream;
@@ -31,12 +32,15 @@ public class ManipulacaoArquivos {
     HashMap<String, Integer> indiceVocabulario = new HashMap<>();
     // indice -> lista invertida (doc,ocorrencia)
     HashMap<Integer, HashMap<String, Integer>> indiceInvertido = new HashMap<>();
+    HashMap<String,String> stopword = new HashMap<>();
     String pasta = "/users/yuricampos/Documents/ori/trabalho-ori/trabalho-ori/src/corpus/";
+    
     int memoria = 20;
 
     public void lerArquivos() throws ClassNotFoundException, FileNotFoundException, FileNotFoundException, IOException {
         String arquivos;
         File folder = new File(pasta);
+        toHash("/users/yuricampos/Documents/ori/trabalho-ori/trabalho-ori/src/stopwords/");
         File[] listaDeArquivos = folder.listFiles();
         for (int i = 0; i < listaDeArquivos.length; i++) {
             qtd++;
@@ -105,7 +109,7 @@ public class ManipulacaoArquivos {
                     sc.useDelimiter("[^ABCDEFGHIJKLMNOPQRSTUVXWYZ1234567890ÇÁÉÍÓÚÃÕÂÊÎÔÛº]");
                     while (sc.hasNext()) {
                         String proximaPalavra = sc.next();
-                        if (proximaPalavra.length() > 0) {
+                        if (proximaPalavra.length() > 0 && !stopword.containsKey(proximaPalavra)) {
                             insertHash(proximaPalavra, arquivo);
                         }
 
@@ -144,6 +148,34 @@ public class ManipulacaoArquivos {
 
             }
         }
+    
+        public HashMap<String,String> toHash(String filePath){
+        try {
+            File file = new File(filePath);
+            if(!file.exists())
+                throw new IOException("Arquivo nao existe.");
+            
+            BufferedReader br = new BufferedReader(new FileReader(filePath));
+            
+            HashMap<String,String> stopword = new HashMap<>();
+            String currentLine;
+            //int index = 0;
+            while( (currentLine = br.readLine() ) != null){
+                currentLine = currentLine.replaceAll("[ÂÀÁÄÃ]","A").replaceAll("[âãàáä]","a").replaceAll("[ÊÈÉË]","E").replaceAll("[êèéë]","e").replaceAll("ÎÍÍÌÏ","I").replaceAll("îííìï","i").replaceAll("[ÔÕÒÓÖ]","O").replaceAll("[ôõòóö]","o").replaceAll("[ÛÙÚÜ]","U").replaceAll("[ûúùü]","u").replaceAll("Ç","C").replaceAll("ç","c").replaceAll("[ýÿ]","y").replaceAll("Ý","Y").replaceAll("ñ","n").replaceAll("Ñ","N").replaceAll("['<>\\|/]","").toUpperCase();
+                stopword.put(currentLine, currentLine);
+            }
+            
+            if(stopword.isEmpty())
+                throw new Exception("Stopword vazia.");
+            
+            System.gc();
+            br.close();
+            return stopword;
+            
+        } catch (Exception e) {
+            return null;
+        }
+    }
     
     public void salvarBytes(){
         for(String key: indiceVocabulario.keySet()){

@@ -161,32 +161,4 @@ public class SalvaBytes {
         }    
     }
     
-    public HashMap<String,String> toHash(String filePath){
-        try {
-            File file = new File(filePath);
-            if(!file.exists())
-                throw new IOException("Arquivo nao existe.");
-            
-            BufferedReader br = new BufferedReader(new FileReader(filePath));
-            
-            HashMap<String,String> stopword = new HashMap<>();
-            String currentLine;
-            //int index = 0;
-            while( (currentLine = br.readLine() ) != null){
-                currentLine = currentLine.replaceAll("[ÂÀÁÄÃ]","A").replaceAll("[âãàáä]","a").replaceAll("[ÊÈÉË]","E").replaceAll("[êèéë]","e").replaceAll("ÎÍÍÌÏ","I").replaceAll("îííìï","i").replaceAll("[ÔÕÒÓÖ]","O").replaceAll("[ôõòóö]","o").replaceAll("[ÛÙÚÜ]","U").replaceAll("[ûúùü]","u").replaceAll("Ç","C").replaceAll("ç","c").replaceAll("[ýÿ]","y").replaceAll("Ý","Y").replaceAll("ñ","n").replaceAll("Ñ","N").replaceAll("['<>\\|/]","").toUpperCase();
-                stopword.put(currentLine, currentLine);
-            }
-            
-            if(stopword.isEmpty())
-                throw new Exception("Stopword vazia.");
-            
-            System.gc();
-            br.close();
-            return stopword;
-            
-        } catch (Exception e) {
-            return null;
-        }
-    }
-    
 }
