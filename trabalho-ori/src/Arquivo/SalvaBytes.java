@@ -51,7 +51,7 @@ public class SalvaBytes {
         }
     }
     
-    public void saveString(String toSave, String place) throws FileNotFoundException, IOException {
+    public void saveString(String toSave) throws FileNotFoundException, IOException {
         this.fos = new FileOutputStream(FILE_VOCABULARY);
         this.fos.write(toSave.getBytes());
         this.fos.flush();
@@ -69,12 +69,23 @@ public class SalvaBytes {
         this.fos.close();
     }
     
-    public void saveHashMap(HashMap<Integer, HashMap<String, Integer>> invIndex) throws FileNotFoundException, IOException {
+    public void saveHashMap(HashMap<String, Integer> invIndex) throws FileNotFoundException, IOException {
         this.fos = new FileOutputStream(FILE_INVFILE);
         this.oos = new ObjectOutputStream(this.fos);
         this.oos.writeObject(invIndex);
         this.oos.close();
         this.fos.close();
+    }
+    
+    public void save(int index, String word, HashMap<String, Integer> invIndex){
+        try {
+            this.saveInt(index, "index");
+            this.saveString(word);
+            this.saveInt(index, "coisa");
+            this.saveHashMap(invIndex);
+        } catch (Exception e) {
+            System.out.println("Erro ao salvar informacoes: " + e.toString());
+        }
     }
     
 }
