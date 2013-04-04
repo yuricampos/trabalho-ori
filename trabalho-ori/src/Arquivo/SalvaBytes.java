@@ -91,28 +91,36 @@ public class SalvaBytes {
     public void saveString(String toSave) throws FileNotFoundException, IOException {
         int size = toSave.length();
         this.fosV.write(toSave.getBytes());
-        this.fosV.write("\0".getBytes());
+        String barrazero = "\0";
         size++;
         while (size < maxSizevocabulary){
-            this.fosV.write("\0".getBytes());
+            barrazero += "\0";
             size++;
         }
+        this.fosV.write(barrazero.getBytes());
     }
     
     public void saveInt(int toSave, String place) throws FileNotFoundException, IOException{
         int size = String.valueOf(toSave).length();
         if(place.equals("index")){
             this.fosI.write(toSave);
-            this.fosI.write("\0".getBytes());
+            String barrazero = "";
             size++;
             while(size < maxSizeIndex - 1){
-                this.fosI.write("\0".getBytes());
+                barrazero += "\0";
                 size++;
             }
+            this.fosI.write(barrazero.getBytes());
         }
         else{
             this.fosII.write(toSave);
-            this.fosII.write("\0".getBytes());
+            String barrazero = "\0";
+            size++;
+            while(size < maxSizeIndex - 1){
+                barrazero += "\0";
+                size++;
+            }
+            this.fosII.write(barrazero.getBytes());
         }
     }
     
@@ -120,12 +128,13 @@ public class SalvaBytes {
         int qtdEntradas = invIndex.size();
         int size = qtdEntradas * 6;
         this.oos.writeObject(invIndex);
-        this.oos.writeBytes("\0");
+        String barrazero = "\0";
         size++;
-        while(size < maxSizeInvList){
-            this.oos.writeBytes("\0");
+        while(size < maxSizeIndex - 1){
+            barrazero += "\0";
             size++;
         }
+        this.oos.writeBytes(barrazero);
         
     }
     
