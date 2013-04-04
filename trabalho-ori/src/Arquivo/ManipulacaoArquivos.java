@@ -20,7 +20,8 @@ import java.util.Scanner;
  * @author yuricampos
  */
 public class ManipulacaoArquivos {
-
+    
+    float memoriaTotal;
     int finalArquivo = 1;
     int MegaBytes = 10241024;
     int indicePalavra = -1;
@@ -28,34 +29,37 @@ public class ManipulacaoArquivos {
     HashMap<String, Integer> indiceVocabulario = new HashMap<>();
     // indice -> lista invertida (doc,ocorrencia)
     HashMap<Integer, HashMap<String, Integer>> indiceInvertido = new HashMap<>();
+    String pasta = "/users/yuricampos/Documents/ori/trabalho-ori/trabalho-ori/src/corpus/";
+    int memoria = 20;
 
-    public void lerArquivos(float memoria) throws ClassNotFoundException, FileNotFoundException, FileNotFoundException, IOException {
-        String pasta = "/users/yuricampos/desktop/Desktop/workspace/arquivos/";
-
+    public void lerArquivos() throws ClassNotFoundException, FileNotFoundException, FileNotFoundException, IOException {
         String arquivos;
         File folder = new File(pasta);
         File[] listaDeArquivos = folder.listFiles();
-
-
         for (int i = 0; i < listaDeArquivos.length; i++) {
             //pega memoria que esta sendo usada na execucao
             float heapSize = Runtime.getRuntime().totalMemory();
             //transforma memoria em MB
             float memoriaUsada = heapSize / MegaBytes;
-            float memoriaNecessaria = 3 * memoria;
-            if (memoria <= 2 * memoriaNecessaria) {
+            float memoriaDisponivel = memoria - memoriaUsada;
+            System.out.println("MEMORIA TOTAL: "+memoria);
+            System.out.println("MEMORIA USADA: "+memoriaUsada);
+            System.out.println("MEMORIA DISPONIVEL: "+memoriaDisponivel);
+           
+            if (memoriaDisponivel <= 1) {
                 salvarHash();
+                System.gc();
                 if (listaDeArquivos[i].isFile()) {
                     arquivos = listaDeArquivos[i].getName();
                     if (arquivos.endsWith(".html") || arquivos.endsWith(".htm")) {
-                        salvarPalavra(arquivos, pasta);
+                        salvarPalavra(arquivos);
                     }
                 }
             } else {
                 if (listaDeArquivos[i].isFile()) {
                     arquivos = listaDeArquivos[i].getName();
                     if (arquivos.endsWith(".html") || arquivos.endsWith(".htm")) {
-                        salvarPalavra(arquivos, pasta);
+                        salvarPalavra(arquivos);
 
                     }
                 }
@@ -65,16 +69,17 @@ public class ManipulacaoArquivos {
 
     public void salvarHash() throws FileNotFoundException, IOException {
         finalArquivo++;
+        
         //salvar hashmap de indice -> vocabulario
         File file = new File("indiceVocabulario" + finalArquivo);
-        FileOutputStream f = new FileOutputStream(file);
+        FileOutputStream f = new FileOutputStream(pasta + file);
         ObjectOutputStream s = new ObjectOutputStream(f);
         s.writeObject(indiceVocabulario);
         s.flush();
         indiceVocabulario.clear();
         //salvar hashmap de indice -> lista invertida (doc,ocorrencia)
         File file2 = new File("indiceInvertido" + finalArquivo);
-        FileOutputStream f2 = new FileOutputStream(file2);
+        FileOutputStream f2 = new FileOutputStream(pasta + file2);
         ObjectOutputStream s2 = new ObjectOutputStream(f2);
         s2.writeObject(indiceInvertido);
         s2.flush();
@@ -82,7 +87,7 @@ public class ManipulacaoArquivos {
 
     }
 
-    public void salvarPalavra(String arquivo, String pasta) {
+    public void salvarPalavra(String arquivo) {
         try {
             try (BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(pasta + arquivo), "ISO8859-1"))) {
                 while (br.ready()) {
@@ -124,7 +129,8 @@ public class ManipulacaoArquivos {
                     indiceInvertido.put(indice, lista);
                     lista.clear();
                 }
-            } else {
+            }
+        }else {
                 indicePalavra++;
                 indiceVocabulario.put(palavra, indicePalavra);
                 lista.put(arquivo, 1);
@@ -132,5 +138,5 @@ public class ManipulacaoArquivos {
 
             }
         }
-    }
+    
 }
