@@ -40,12 +40,31 @@ public class SalvaBytes {
             
             if(!fileI.exists())
                 fileI.createNewFile();
+            else{
+                fileI.delete();
+                fileI.createNewFile();
+            }
+            
             if(!fileV.exists())
                 fileV.createNewFile();
+            else{
+                fileV.delete();
+                fileV.createNewFile();
+            }
+            
             if(!fileII.exists())
                 fileII.createNewFile();
+            else{
+                fileII.delete();
+                fileII.createNewFile();
+            }
+            
             if(!fileF.exists())
                 fileF.createNewFile();
+            else{
+                fileF.delete();
+                fileF.createNewFile();
+            }
             
             this.fosI = new FileOutputStream(FILE_INDEX, true);
             this.fosV = new FileOutputStream(FILE_VOCABULARY, true);
