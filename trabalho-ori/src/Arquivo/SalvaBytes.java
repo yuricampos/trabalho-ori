@@ -25,7 +25,10 @@ public class SalvaBytes {
     private final String FILE_VOCABULARY = DIRECTORY_ROOT + "vocabulario.dat";
     private final String FILE_INDEXINVFILE = DIRECTORY_ROOT + "indexinvfile.dat";
     private final String FILE_INVFILE = DIRECTORY_ROOT + "invfile.dat";
-    private FileOutputStream fos;
+    private FileOutputStream fosI;
+    private FileOutputStream fosV;
+    private FileOutputStream fosII;
+    private FileOutputStream fosF;
     private ObjectOutputStream oos;
     
     public SalvaBytes(){
@@ -44,6 +47,12 @@ public class SalvaBytes {
             if(!fileF.exists())
                 fileF.createNewFile();
             
+            this.fosI = new FileOutputStream(FILE_INDEX, true);
+            this.fosV = new FileOutputStream(FILE_VOCABULARY, true);
+            this.fosII = new FileOutputStream(FILE_INDEXINVFILE, true);
+            this.fosF = new FileOutputStream(FILE_INVFILE, true);
+            this.oos = new ObjectOutputStream(this.fosF);
+            
             System.gc();
             
         } catch (IOException e) {
@@ -52,35 +61,24 @@ public class SalvaBytes {
     }
     
     public void saveString(String toSave) throws FileNotFoundException, IOException {
-        this.fos = new FileOutputStream(FILE_VOCABULARY, true);
-        this.fos.write(toSave.getBytes());
-        this.fos.write("\0".getBytes());
-        
-        this.fos.flush();
-        this.fos.close();
+        this.fosV.write(toSave.getBytes());
+        this.fosV.write("\0".getBytes());
     }
     
     public void saveInt(int toSave, String place) throws FileNotFoundException, IOException{
-        if(place.equals("index"))
-            this.fos = new FileOutputStream(FILE_INDEX, true);
-        else
-            this.fos = new FileOutputStream(FILE_INDEXINVFILE, true);
-        
-        this.fos.write(toSave);
-        this.fos.write("\0".getBytes());
-        
-        this.fos.flush();
-        this.fos.close();
+        if(place.equals("index")){
+            this.fosI.write(toSave);
+            this.fosI.write("\0".getBytes());
+        }
+        else{
+            this.fosII.write(toSave);
+            this.fosII.write("\0".getBytes());
+        }
     }
     
     public void saveHashMap(HashMap<String, Integer> invIndex) throws FileNotFoundException, IOException {
-        this.fos = new FileOutputStream(FILE_INVFILE, true);
-        this.oos = new ObjectOutputStream(this.fos);
         this.oos.writeObject(invIndex);
         this.oos.writeBytes("\0");
-        
-        this.oos.close();
-        this.fos.close();
     }
     
     public void save(int index, String word, HashMap<String, Integer> invIndex){
@@ -92,6 +90,18 @@ public class SalvaBytes {
         } catch (Exception e) {
             System.out.println("Erro ao salvar informacoes: " + e.toString());
         }
+    }
+    
+    public void close(){
+        try {
+            this.oos.close();
+            this.fosI.close();
+            this.fosV.close();
+            this.fosII.close();
+            this.fosF.close();
+        } catch (Exception e) {
+            System.out.println("Erro ao fechar SalvaBytes   "+ e.toString());
+        }    
     }
     
 }
