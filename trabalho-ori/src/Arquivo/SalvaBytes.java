@@ -1,9 +1,13 @@
 package Arquivo;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.HashMap;
@@ -146,6 +150,34 @@ public class SalvaBytes {
         } catch (Exception e) {
             System.out.println("Erro ao fechar SalvaBytes   "+ e.toString());
         }    
+    }
+    
+    public HashMap<String,String> toHash(String filePath){
+        try {
+            File file = new File(filePath);
+            if(!file.exists())
+                throw new IOException("Arquivo nao existe.");
+            
+            BufferedReader br = new BufferedReader(new FileReader(filePath));
+            
+            HashMap<String,String> stopword = new HashMap<>();
+            String currentLine;
+            //int index = 0;
+            while( (currentLine = br.readLine() ) != null){
+                currentLine = currentLine.replaceAll("[ÂÀÁÄÃ]","A").replaceAll("[âãàáä]","a").replaceAll("[ÊÈÉË]","E").replaceAll("[êèéë]","e").replaceAll("ÎÍÍÌÏ","I").replaceAll("îííìï","i").replaceAll("[ÔÕÒÓÖ]","O").replaceAll("[ôõòóö]","o").replaceAll("[ÛÙÚÜ]","U").replaceAll("[ûúùü]","u").replaceAll("Ç","C").replaceAll("ç","c").replaceAll("[ýÿ]","y").replaceAll("Ý","Y").replaceAll("ñ","n").replaceAll("Ñ","N").replaceAll("['<>\\|/]","").toUpperCase();
+                stopword.put(currentLine, currentLine);
+            }
+            
+            if(stopword.isEmpty())
+                throw new Exception("Stopword vazia.");
+            
+            System.gc();
+            br.close();
+            return stopword;
+            
+        } catch (Exception e) {
+            return null;
+        }
     }
     
 }
