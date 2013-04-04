@@ -52,27 +52,33 @@ public class SalvaBytes {
     }
     
     public void saveString(String toSave) throws FileNotFoundException, IOException {
-        this.fos = new FileOutputStream(FILE_VOCABULARY);
+        this.fos = new FileOutputStream(FILE_VOCABULARY, true);
         this.fos.write(toSave.getBytes());
+        this.fos.write("\0".getBytes());
+        
         this.fos.flush();
         this.fos.close();
     }
     
     public void saveInt(int toSave, String place) throws FileNotFoundException, IOException{
         if(place.equals("index"))
-            this.fos = new FileOutputStream(FILE_INDEX);
+            this.fos = new FileOutputStream(FILE_INDEX, true);
         else
-            this.fos = new FileOutputStream(FILE_INDEXINVFILE);
+            this.fos = new FileOutputStream(FILE_INDEXINVFILE, true);
         
         this.fos.write(toSave);
+        this.fos.write("\0".getBytes());
+        
         this.fos.flush();
         this.fos.close();
     }
     
     public void saveHashMap(HashMap<String, Integer> invIndex) throws FileNotFoundException, IOException {
-        this.fos = new FileOutputStream(FILE_INVFILE);
+        this.fos = new FileOutputStream(FILE_INVFILE, true);
         this.oos = new ObjectOutputStream(this.fos);
         this.oos.writeObject(invIndex);
+        this.oos.writeBytes("\0");
+        
         this.oos.close();
         this.fos.close();
     }
