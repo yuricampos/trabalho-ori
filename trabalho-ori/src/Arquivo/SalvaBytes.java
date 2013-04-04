@@ -19,8 +19,8 @@ import java.util.HashMap;
  * @author pablohenrique
  */
 public class SalvaBytes {
-    private final String DIRECTORY_ROOT = "/home/pablohenrique/Projetos/Java/ORI-saida/";
-    //private final String DIRECTORY_ROOT = "/users/yuricampos/desktop/Desktop/workspace/arquivos/";
+    //private final String DIRECTORY_ROOT = "/home/pablohenrique/Projetos/Java/ORI-saida/";
+    private final String DIRECTORY_ROOT = "/users/yuricampos/Documents/ori/trabalho-ori/trabalho-ori/src/corpus/";
     private final String FILE_INDEX = DIRECTORY_ROOT + "indice.dat";
     private final String FILE_VOCABULARY = DIRECTORY_ROOT + "vocabulario.dat";
     private final String FILE_INDEXINVFILE = DIRECTORY_ROOT + "indexinvfile.dat";
@@ -30,6 +30,11 @@ public class SalvaBytes {
     private FileOutputStream fosII;
     private FileOutputStream fosF;
     private ObjectOutputStream oos;
+    private int maxSizevocabulary = 28;
+    private int maxSizeInvList = 864;
+    private int maxSizeIndex = 4;
+    private int maxSizeFileName = 4;
+    private int maxSizeOcorr = 2;
     
     public SalvaBytes(){
         try {
@@ -80,14 +85,26 @@ public class SalvaBytes {
     }
     
     public void saveString(String toSave) throws FileNotFoundException, IOException {
+        int size = toSave.length();
         this.fosV.write(toSave.getBytes());
         this.fosV.write("\0".getBytes());
+        size++;
+        while (size < maxSizevocabulary){
+            this.fosV.write("\0".getBytes());
+            size++;
+        }
     }
     
     public void saveInt(int toSave, String place) throws FileNotFoundException, IOException{
+        int size = String.valueOf(toSave).length();
         if(place.equals("index")){
             this.fosI.write(toSave);
             this.fosI.write("\0".getBytes());
+            size++;
+            while(size < maxSizeIndex - 1){
+                this.fosI.write("\0".getBytes());
+                size++;
+            }
         }
         else{
             this.fosII.write(toSave);
@@ -96,8 +113,16 @@ public class SalvaBytes {
     }
     
     public void saveHashMap(HashMap<String, Integer> invIndex) throws FileNotFoundException, IOException {
+        int qtdEntradas = invIndex.size();
+        int size = qtdEntradas * 6;
         this.oos.writeObject(invIndex);
         this.oos.writeBytes("\0");
+        size++;
+        while(size < maxSizeInvList){
+            this.oos.writeBytes("\0");
+            size++;
+        }
+        
     }
     
     public void save(int index, String word, HashMap<String, Integer> invIndex){
