@@ -127,7 +127,7 @@ public class SalvaBytes {
         }    
     }
     
-    public HashMap<Integer,String> toHash(String filePath){
+    public HashMap<String,String> toHash(String filePath){
         try {
             File file = new File(filePath);
             if(!file.exists())
@@ -135,13 +135,12 @@ public class SalvaBytes {
             
             BufferedReader br = new BufferedReader(new FileReader(filePath));
             
-            HashMap<Integer,String> stopword = new HashMap<>();
+            HashMap<String,String> stopword = new HashMap<>();
             String currentLine;
-            int index = 0;
+            //int index = 0;
             while( (currentLine = br.readLine() ) != null){
                 currentLine = currentLine.replaceAll("[ÂÀÁÄÃ]","A").replaceAll("[âãàáä]","a").replaceAll("[ÊÈÉË]","E").replaceAll("[êèéë]","e").replaceAll("ÎÍÍÌÏ","I").replaceAll("îííìï","i").replaceAll("[ÔÕÒÓÖ]","O").replaceAll("[ôõòóö]","o").replaceAll("[ÛÙÚÜ]","U").replaceAll("[ûúùü]","u").replaceAll("Ç","C").replaceAll("ç","c").replaceAll("[ýÿ]","y").replaceAll("Ý","Y").replaceAll("ñ","n").replaceAll("Ñ","N").replaceAll("['<>\\|/]","").toUpperCase();
-                stopword.put(index, currentLine);
-                index++;
+                stopword.put(currentLine, currentLine);
             }
             
             if(stopword.isEmpty())
