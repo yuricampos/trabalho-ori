@@ -47,7 +47,7 @@ public class ManipulacaoArquivos {
            // System.out.println("MEMORIA DISPONIVEL: "+memoriaDisponivel);
            
             if (memoriaDisponivel <= 1) {
-                salvarHash();
+                salvarBytes();
                 System.gc();
                 if (listaDeArquivos[i].isFile()) {
                     arquivos = listaDeArquivos[i].getName();
@@ -139,4 +139,17 @@ public class ManipulacaoArquivos {
             }
         }
     
+    public void salvarBytes(){
+        SalvaBytes s = new SalvaBytes();
+        for(String key: indiceVocabulario.keySet()){
+            HashMap<String, Integer> listaInv = new HashMap<>();
+            int indice = indiceVocabulario.get(key);
+            listaInv = indiceInvertido.get(indice);
+            s.save(indice, key, listaInv);
+            System.gc();       
+        }
+    }
+    
+
 }
+    
