@@ -42,9 +42,9 @@ public class ManipulacaoArquivos {
             //transforma memoria em MB
             float memoriaUsada = heapSize / MegaBytes;
             float memoriaDisponivel = memoria - memoriaUsada;
-            System.out.println("MEMORIA TOTAL: "+memoria);
-            System.out.println("MEMORIA USADA: "+memoriaUsada);
-            System.out.println("MEMORIA DISPONIVEL: "+memoriaDisponivel);
+           // System.out.println("MEMORIA TOTAL: "+memoria);
+           // System.out.println("MEMORIA USADA: "+memoriaUsada);
+           // System.out.println("MEMORIA DISPONIVEL: "+memoriaDisponivel);
            
             if (memoriaDisponivel <= 1) {
                 salvarHash();
