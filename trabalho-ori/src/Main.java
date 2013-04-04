@@ -1,5 +1,10 @@
 
+import Arquivo.ManipulacaoArquivos;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /*
  * To change this template, choose Tools | Templates
@@ -16,12 +21,14 @@ public class Main {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        
-        System.out.println("Entre com o tamanho da memoria em MB");
-        Scanner scanner = new Scanner(System.in);
-        int memoria;
-       // memoria = scanner.nextInt();
 
+     
         
+        ManipulacaoArquivos ma = new ManipulacaoArquivos();
+        try {
+            ma.lerArquivos();
+        } catch (Exception ex) {
+            
+        } 
     }
 }
