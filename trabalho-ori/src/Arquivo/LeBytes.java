@@ -4,7 +4,9 @@
  */
 package Arquivo;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.InputStream;
 
 /**
  *
@@ -21,6 +23,10 @@ public class LeBytes {
     int sizeindexinvfile = (int) indexinvfile.length();
     int sizeindice = (int) indice.length();
     int sizeinvfile = (int) invfile.length();
+    int carregando = memoria / 4;
+    byte[] data = new byte[carregando];
+    InputStream in;
+     //   in = new ByteArrayInputStream(invfile);
     
         
     }

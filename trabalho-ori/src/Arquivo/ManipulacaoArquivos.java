@@ -26,7 +26,7 @@ public class ManipulacaoArquivos {
     int finalArquivo = 1;
     int MegaBytes = 10241024;
     int indicePalavra = -1;
-    int qtd = 0;
+    int qtd = 1;
     private SalvaBytes s = new SalvaBytes();
     // Palavra -> Indice (tem que gerar 2 arquivos)
     HashMap<String, Integer> indiceVocabulario = new HashMap<>();
@@ -43,7 +43,7 @@ public class ManipulacaoArquivos {
         toHash("/users/yuricampos/Documents/ori/trabalho-ori/trabalho-ori/src/stopwords/");
         File[] listaDeArquivos = folder.listFiles();
         for (int i = 0; i < listaDeArquivos.length; i++) {
-            qtd++;
+            
             //pega memoria que esta sendo usada na execucao
             float heapSize = Runtime.getRuntime().totalMemory();
             //transforma memoria em MB
@@ -60,6 +60,7 @@ public class ManipulacaoArquivos {
                     arquivos = listaDeArquivos[i].getName();
                     if (arquivos.endsWith(".html") || arquivos.endsWith(".htm")) {
                         System.out.println("LENDO ARQUIVO NRO: "+qtd+" NOME: "+arquivos);
+                        qtd++;
                         salvarPalavra(arquivos);
                         
                     }
@@ -69,6 +70,7 @@ public class ManipulacaoArquivos {
                     arquivos = listaDeArquivos[i].getName();
                     if (arquivos.endsWith(".html") || arquivos.endsWith(".htm")) {
                         System.out.println("LENDO ARQUIVO NRO: "+qtd+" NOME: "+arquivos);
+                        qtd++;
                         salvarPalavra(arquivos);
 
                     }
