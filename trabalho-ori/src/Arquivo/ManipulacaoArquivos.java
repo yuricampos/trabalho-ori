@@ -33,14 +33,19 @@ public class ManipulacaoArquivos {
     // indice -> lista invertida (doc,ocorrencia)
     HashMap<Integer, HashMap<String, Integer>> indiceInvertido = new HashMap<>();
     HashMap<String,String> stopword = new HashMap<>();
-    String pasta = "/users/yuricampos/Documents/ori/trabalho-ori/trabalho-ori/src/corpus/";
+    
+    //String pasta = "/users/yuricampos/Documents/ori/trabalho-ori/trabalho-ori/src/corpus/";
+    String pasta = "/home/pablohenrique/Projetos/Java/trabalho-ori/trabalho-ori/src/corpus/";
+    
+    //String tohash = "/users/yuricampos/Documents/ori/trabalho-ori/trabalho-ori/src/stopwords/stopwords.txt";
+    String tohash = "/home/pablohenrique/Projetos/Java/trabalho-ori/trabalho-ori/src/stopwords/stopwords.txt";
     
     int memoria = 20;
 
     public void lerArquivos() throws ClassNotFoundException, FileNotFoundException, FileNotFoundException, IOException {
         String arquivos;
         File folder = new File(pasta);
-        toHash("/users/yuricampos/Documents/ori/trabalho-ori/trabalho-ori/src/stopwords/");
+        this.stopword = toHash(tohash);
         File[] listaDeArquivos = folder.listFiles();
         for (int i = 0; i < listaDeArquivos.length; i++) {
             
@@ -105,13 +110,13 @@ public class ManipulacaoArquivos {
         try {
             try (BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(pasta + arquivo), "ISO8859-1"))) {
                 while (br.ready()) {
-                    int serialMem;
+                    //int serialMem;
                     String linha = br.readLine().replaceAll("\\<.*?\\>", "").replaceAll("&ccedil;", "c").replaceAll("&Ccedil;", "C").replaceAll("&acirc;", "a").replaceAll("&ecirc;", "e").replaceAll("&ocirc;", "o").replaceAll("&aacute;", "a").replaceAll("&eacute;", "e").replaceAll("&iacute;", "i").replaceAll("&oacute;", "o").replaceAll("&uacute;", "u").replaceAll("&atilde;", "a").replaceAll("&otilde;", "o").replaceAll("&Acirc;", "A").replaceAll("&Ecirc;", "E").replaceAll("&Ocirc;", "O").replaceAll("&Aacute;", "A").replaceAll("&Eacute;", "E").replaceAll("&Iacute;", "I").replaceAll("&Oacute;", "O").replaceAll("&Uacute;", "U").replaceAll("&Atilde;", "A").replaceAll("&Otilde;", "O").replaceAll("&nbsp;", " ").toUpperCase();
                     Scanner sc = new Scanner(linha);
                     sc.useDelimiter("[^ABCDEFGHIJKLMNOPQRSTUVXWYZ1234567890ÇÁÉÍÓÚÃÕÂÊÎÔÛº]");
                     while (sc.hasNext()) {
                         String proximaPalavra = sc.next();
-                        if (proximaPalavra.length() > 0 && !stopword.containsKey(proximaPalavra)) {
+                        if (proximaPalavra.length() > 0 && !this.stopword.containsKey(proximaPalavra)) {
                             insertHash(proximaPalavra, arquivo);
                         }
 
@@ -127,7 +132,7 @@ public class ManipulacaoArquivos {
     }
 
     public void insertHash(String palavra, String arquivo) {
-        HashMap<String, Integer> lista = new HashMap<>();
+    HashMap<String, Integer> lista = new HashMap<>();
         if (indiceVocabulario.containsKey(palavra)) {
             Integer indice = indiceVocabulario.get(palavra);
             if (indiceInvertido.containsKey(indice)) {
@@ -137,19 +142,20 @@ public class ManipulacaoArquivos {
                     ocorrencia++;
                     lista.put(arquivo, ocorrencia);
                     indiceInvertido.put(indice, lista);
-                } else {
+                }
+                else {
                     lista.put(arquivo, 1);
                     indiceInvertido.put(indice, lista);
                 }
             }
-        }else {
-                indicePalavra++;
-                indiceVocabulario.put(palavra, indicePalavra);
-                lista.put(arquivo, 1);
-                indiceInvertido.put(indicePalavra, lista);
-
-            }
         }
+        else {
+            indicePalavra++;
+            indiceVocabulario.put(palavra, indicePalavra);
+            lista.put(arquivo, 1);
+            indiceInvertido.put(indicePalavra, lista);
+        }
+    }
     
         public HashMap<String,String> toHash(String filePath){
         try {
