@@ -34,14 +34,14 @@ public class ManipulacaoArquivos {
     HashMap<Integer, HashMap<String, Integer>> indiceInvertido = new HashMap<>();
     HashMap<String,String> stopword = new HashMap<>();
     
-    String pasta = "/users/yuricampos/Documents/ori/trabalho-ori/trabalho-ori/src/corpus/";
-   // String pasta = "/home/pablohenrique/Projetos/Java/trabalho-ori/trabalho-ori/src/corpus/";
+    //String pasta = "/users/yuricampos/Documents/ori/trabalho-ori/trabalho-ori/src/corpus/";
+    String pasta = "/home/pablohenrique/Projetos/Java/trabalho-ori/trabalho-ori/src/corpus/";
     
-    String tohash = "/users/yuricampos/Documents/ori/trabalho-ori/trabalho-ori/src/stopwords/stopwords.txt";
-    //String tohash = "/home/pablohenrique/Projetos/Java/trabalho-ori/trabalho-ori/src/stopwords/stopwords.txt";
+    //String tohash = "/users/yuricampos/Documents/ori/trabalho-ori/trabalho-ori/src/stopwords/stopwords.txt";
+    String tohash = "/home/pablohenrique/Projetos/Java/trabalho-ori/trabalho-ori/src/stopwords/stopwords.txt";
     
-    String saida = "/users/yuricampos/Documents/ori/trabalho-ori/trabalho-ori/src/corpus/";
-    //String saida = "/home/pablohenrique/Projetos/Java/ORI-saida/";
+    //String saida = "/users/yuricampos/Documents/ori/trabalho-ori/trabalho-ori/src/corpus/";
+    String saida = "/home/pablohenrique/Projetos/Java/ORI-saida/";
     
     int memoria = 20;
     float memoriaUsada = 0;
@@ -130,9 +130,8 @@ public class ManipulacaoArquivos {
                         if (proximaPalavra.length() > 0 && !this.stopword.containsKey(proximaPalavra)) {
                             insertHash(proximaPalavra, arquivo);
                         }
-                        
-
                     }
+                    sc.close();
                 }
             }
 
