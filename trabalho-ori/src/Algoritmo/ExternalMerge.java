@@ -7,10 +7,8 @@ package Algoritmo;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.HashMap;
 
 /**
@@ -30,8 +28,10 @@ public class ExternalMerge {
     private File fFinal = new File(this.indiceInvertidoFinal);
     
     public void comparar(HashMap<Integer, HashMap<String, Integer>> lista1, HashMap<Integer, HashMap<String, Integer>> lista2){
-        
+        //para cada indice, faca
         for(Integer h : lista1.keySet()){
+           //se a lista 2 nao possui a chave 'h'
+           // coloca no indice invertido este elemento
            if(!lista2.containsKey(h))
                this.indiceInvertido.put(h, lista1.get(h));
            else{
@@ -57,16 +57,19 @@ public class ExternalMerge {
         }
     }
     
+    //Recebe uma string com o caminho
     public void lerArquivos(String pasta) throws ClassNotFoundException, FileNotFoundException, FileNotFoundException, IOException {
         File folder = new File(pasta);
         File[] listaDeArquivos = folder.listFiles();
         
         for (int i = 0; i < listaDeArquivos.length-1; i++) {
+            //Le o arquivo inteiro
             ObjectInputStream s1 = new ObjectInputStream(new FileInputStream(new File(listaDeArquivos[i].toString())));
+            //retorna um objeto desse aqui \/
             HashMap<Integer, HashMap<String, Integer>> hash1 = (HashMap<Integer, HashMap<String, Integer>>) s1.readObject();
             s1 = new ObjectInputStream(new FileInputStream(new File(listaDeArquivos[i+1].toString())));
             HashMap<Integer, HashMap<String, Integer>> hash2 = (HashMap<Integer, HashMap<String, Integer>>) s1.readObject();
-            
+            //Chama outra funcao
             this.comparar(hash1, hash2);
             
             s1.close();
