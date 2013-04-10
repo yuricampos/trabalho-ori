@@ -130,6 +130,7 @@ public class ManipulacaoArquivos {
                         if (proximaPalavra.length() > 0 && !this.stopword.containsKey(proximaPalavra)) {
                             insertHash(proximaPalavra, arquivo);
                         }
+                        
 
                     }
                 }
