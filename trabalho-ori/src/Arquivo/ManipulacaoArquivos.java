@@ -34,11 +34,11 @@ public class ManipulacaoArquivos {
     HashMap<Integer, HashMap<String, Integer>> indiceInvertido = new HashMap<>();
     HashMap<String,String> stopword = new HashMap<>();
     
-    //String pasta = "/users/yuricampos/Documents/ori/trabalho-ori/trabalho-ori/src/corpus/";
-    String pasta = "/home/pablohenrique/Projetos/Java/trabalho-ori/trabalho-ori/src/corpus/";
+    String pasta = "/users/yuricampos/Documents/ori/trabalho-ori/trabalho-ori/src/corpus/";
+    //String pasta = "/home/pablohenrique/Projetos/Java/trabalho-ori/trabalho-ori/src/corpus/";
     
-    //String tohash = "/users/yuricampos/Documents/ori/trabalho-ori/trabalho-ori/src/stopwords/stopwords.txt";
-    String tohash = "/home/pablohenrique/Projetos/Java/trabalho-ori/trabalho-ori/src/stopwords/stopwords.txt";
+    String tohash = "/users/yuricampos/Documents/ori/trabalho-ori/trabalho-ori/src/stopwords/stopwords.txt";
+    //String tohash = "/home/pablohenrique/Projetos/Java/trabalho-ori/trabalho-ori/src/stopwords/stopwords.txt";
     
     int memoria = 20;
 
@@ -54,12 +54,12 @@ public class ManipulacaoArquivos {
             //transforma memoria em MB
             float memoriaUsada = heapSize / MegaBytes;
             float memoriaDisponivel = memoria - memoriaUsada;
-           // System.out.println("MEMORIA TOTAL: "+memoria);
-           // System.out.println("MEMORIA USADA: "+memoriaUsada);
-           // System.out.println("MEMORIA DISPONIVEL: "+memoriaDisponivel);
+           System.out.println("MEMORIA TOTAL: "+memoria);
+           System.out.println("MEMORIA USADA: "+memoriaUsada);
+           System.out.println("MEMORIA DISPONIVEL: "+memoriaDisponivel);
            
             if (memoriaDisponivel <= 1) {
-                salvarBytes();
+                salvarHash();
                 System.gc();
                 if (listaDeArquivos[i].isFile()) {
                     arquivos = listaDeArquivos[i].getName();
@@ -82,7 +82,7 @@ public class ManipulacaoArquivos {
                 }
             }
         }
-        salvarBytes();
+        salvarHash();
         s.close();
     }
 
@@ -103,6 +103,7 @@ public class ManipulacaoArquivos {
         s2.writeObject(indiceInvertido);
         s2.flush();
         indiceInvertido.clear();
+        System.gc();
 
     }
 
