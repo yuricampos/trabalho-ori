@@ -21,30 +21,25 @@ import java.util.Scanner;
  * @author yuricampos
  */
 public class ManipulacaoArquivos {
-    
-    float memoriaTotal;
+
     int finalArquivo = 1;
-    int MegaBytes = 10241024;
     int indicePalavra = -1;
     int qtd = 1;
+    int MegaBytes = 10241024;
     private SalvaBytes s = new SalvaBytes();
     // Palavra -> Indice (tem que gerar 2 arquivos)
     HashMap<String, Integer> indiceVocabulario = new HashMap<>();
     // indice -> lista invertida (doc,ocorrencia)
     HashMap<Integer, HashMap<String, Integer>> indiceInvertido = new HashMap<>();
-    HashMap<String,String> stopword = new HashMap<>();
-    
+    HashMap<String, String> stopword = new HashMap<>();
     String pasta = "/users/yuricampos/Documents/ori/trabalho-ori/trabalho-ori/src/corpus/";
     //String pasta = "/home/pablohenrique/Projetos/Java/trabalho-ori/trabalho-ori/src/corpus/";
-    
     String tohash = "/users/yuricampos/Documents/ori/trabalho-ori/trabalho-ori/src/stopwords/stopwords.txt";
     //String tohash = "/home/pablohenrique/Projetos/Java/trabalho-ori/trabalho-ori/src/stopwords/stopwords.txt";
-    
     String saida = "/users/yuricampos/Documents/ori/trabalho-ori/trabalho-ori/src/corpus/";
     //String saida = "/home/pablohenrique/Projetos/Java/ORI-saida/";
-    
-    int memoria = 18;
-    float memoriaUsada = 0;
+    long memoria = 20;
+    long memoriaUsada = 0;
 
     public void lerArquivos() throws ClassNotFoundException, FileNotFoundException, FileNotFoundException, IOException {
         String arquivos;
@@ -52,34 +47,28 @@ public class ManipulacaoArquivos {
         this.stopword = toHash(tohash);
         File[] listaDeArquivos = folder.listFiles();
         for (int i = 0; i < listaDeArquivos.length; i++) {
-            memoriaUsada = memoriaUsada + listaDeArquivos[i].getTotalSpace();
-            System.out.println("MEMORIA USADA: "+memoriaUsada);
-            //pega memoria que esta sendo usada na execucao
-            float heapSize = Runtime.getRuntime().totalMemory();
-            //transforma memoria em MB
-            float memoriaUsada = heapSize / MegaBytes;
-            float memoriaDisponivel = memoria - memoriaUsada;
-           System.out.println("MEMORIA TOTAL: "+memoria);
-           System.out.println("MEMORIA USADA: "+memoriaUsada);
-           System.out.println("MEMORIA DISPONIVEL: "+memoriaDisponivel);
-           
-            if (memoriaDisponivel <= 1) {
-                salvarHash();
-                System.gc();
-                if (listaDeArquivos[i].isFile()) {
-                    arquivos = listaDeArquivos[i].getName();
-                    if (arquivos.endsWith(".html") || arquivos.endsWith(".htm")) {
-                        System.out.println("LENDO ARQUIVO NRO: "+qtd+" NOME: "+arquivos);
+            memoriaUsada = memoriaUsada + 1;
+            //float sizeArquivo = listaDeArquivos[i].getUsableSpace() / 1024 / 1024;
+            if (listaDeArquivos[i].isFile()) {
+                arquivos = listaDeArquivos[i].getName();
+                if (arquivos.endsWith(".html") || arquivos.endsWith(".htm")) {
+
+                    // System.out.println("Size Arquivo " + sizeArquivo);
+                    //float heapSize = Runtime.getRuntime().totalMemory();
+                    //memoriaUsada = memoriaUsada + sizeArquivo;
+                    //memoriaUsada = (long) (heapSize / MegaBytes);
+                    System.out.println("MEMORIA USADA: " + memoriaUsada);
+                    long memoriaDisponivel = memoria - memoriaUsada;
+                    System.out.println("MEMORIA TOTAL: " + memoria);
+                    if (memoriaDisponivel <= 1) {
+                        salvarHash();
+                        //memoriaUsada = sizeArquivo;
+                        memoriaUsada = 0;
+                        System.out.println("LENDO ARQUIVO NRO: " + qtd + " NOME: " + arquivos);
                         qtd++;
                         salvarPalavra(arquivos);
-                        
-                    }
-                }
-            } else {
-                if (listaDeArquivos[i].isFile()) {
-                    arquivos = listaDeArquivos[i].getName();
-                    if (arquivos.endsWith(".html") || arquivos.endsWith(".htm")) {
-                        System.out.println("LENDO ARQUIVO NRO: "+qtd+" NOME: "+arquivos);
+                    } else {
+                        System.out.println("LENDO ARQUIVO NRO: " + qtd + " NOME: " + arquivos);
                         qtd++;
                         salvarPalavra(arquivos);
 
@@ -106,8 +95,8 @@ public class ManipulacaoArquivos {
         System.gc();
 
     }
-    
-    public void salvarVocabulario() throws FileNotFoundException, IOException{
+
+    public void salvarVocabulario() throws FileNotFoundException, IOException {
         File file = new File("indiceVocabulario");
         FileOutputStream f = new FileOutputStream(saida + file);
         ObjectOutputStream s = new ObjectOutputStream(f);
@@ -146,7 +135,7 @@ public class ManipulacaoArquivos {
     }
 
     public void insertHash(String palavra, String arquivo) {
-    HashMap<String, Integer> lista = new HashMap<>();
+        HashMap<String, Integer> lista = new HashMap<>();
         if (indiceVocabulario.containsKey(palavra)) {
             Integer indice = indiceVocabulario.get(palavra);
             if (indiceInvertido.containsKey(indice)) {
@@ -156,64 +145,59 @@ public class ManipulacaoArquivos {
                     ocorrencia++;
                     lista.put(arquivo, ocorrencia);
                     indiceInvertido.put(indice, lista);
-                }
-                else {
+                } else {
                     lista.put(arquivo, 1);
                     indiceInvertido.put(indice, lista);
                 }
             }
-        }
-        else {
+        } else {
             indicePalavra++;
             indiceVocabulario.put(palavra, indicePalavra);
             lista.put(arquivo, 1);
             indiceInvertido.put(indicePalavra, lista);
         }
     }
-    
-        public HashMap<String,String> toHash(String filePath){
+
+    public HashMap<String, String> toHash(String filePath) {
         try {
             File file = new File(filePath);
-            if(!file.exists())
+            if (!file.exists()) {
                 throw new IOException("Arquivo nao existe.");
-            
+            }
+
             BufferedReader br = new BufferedReader(new FileReader(filePath));
-            
-            HashMap<String,String> stopword = new HashMap<>();
+
+            HashMap<String, String> stopword = new HashMap<>();
             String currentLine;
             //int index = 0;
-            while( (currentLine = br.readLine() ) != null){
-                currentLine = currentLine.replaceAll("[ÂÀÁÄÃ]","A").replaceAll("[âãàáä]","a").replaceAll("[ÊÈÉË]","E").replaceAll("[êèéë]","e").replaceAll("ÎÍÍÌÏ","I").replaceAll("îííìï","i").replaceAll("[ÔÕÒÓÖ]","O").replaceAll("[ôõòóö]","o").replaceAll("[ÛÙÚÜ]","U").replaceAll("[ûúùü]","u").replaceAll("Ç","C").replaceAll("ç","c").replaceAll("[ýÿ]","y").replaceAll("Ý","Y").replaceAll("ñ","n").replaceAll("Ñ","N").replaceAll("['<>\\|/]","").toUpperCase();
+            while ((currentLine = br.readLine()) != null) {
+                currentLine = currentLine.replaceAll("[ÂÀÁÄÃ]", "A").replaceAll("[âãàáä]", "a").replaceAll("[ÊÈÉË]", "E").replaceAll("[êèéë]", "e").replaceAll("ÎÍÍÌÏ", "I").replaceAll("îííìï", "i").replaceAll("[ÔÕÒÓÖ]", "O").replaceAll("[ôõòóö]", "o").replaceAll("[ÛÙÚÜ]", "U").replaceAll("[ûúùü]", "u").replaceAll("Ç", "C").replaceAll("ç", "c").replaceAll("[ýÿ]", "y").replaceAll("Ý", "Y").replaceAll("ñ", "n").replaceAll("Ñ", "N").replaceAll("['<>\\|/]", "").toUpperCase();
                 stopword.put(currentLine, currentLine);
             }
-            
-            if(stopword.isEmpty())
+
+            if (stopword.isEmpty()) {
                 throw new Exception("Stopword vazia.");
-            
+            }
+
             System.gc();
             br.close();
             return stopword;
-            
+
         } catch (Exception e) {
             return null;
         }
     }
-    
-        
-    public void salvarBytes(){
-        for(String key: indiceVocabulario.keySet()){
+
+    public void salvarBytes() {
+        for (String key : indiceVocabulario.keySet()) {
             HashMap<String, Integer> listaInv = new HashMap<>();
             int indice = indiceVocabulario.get(key);
             listaInv = indiceInvertido.get(indice);
-            s.save(indice, key, listaInv);  
+            s.save(indice, key, listaInv);
             listaInv.clear();
         }
-            
-            indiceVocabulario.clear();
-            indiceInvertido.clear();   
-    }
-    
-    
 
+        indiceVocabulario.clear();
+        indiceInvertido.clear();
+    }
 }
-    
