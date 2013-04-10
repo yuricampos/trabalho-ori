@@ -34,11 +34,13 @@ public class ManipulacaoArquivos {
     HashMap<Integer, HashMap<String, Integer>> indiceInvertido = new HashMap<>();
     HashMap<String,String> stopword = new HashMap<>();
     
-    String pasta = "/users/yuricampos/Documents/ori/trabalho-ori/trabalho-ori/src/corpus/";
-    //String pasta = "/home/pablohenrique/Projetos/Java/trabalho-ori/trabalho-ori/src/corpus/";
+    //String pasta = "/users/yuricampos/Documents/ori/trabalho-ori/trabalho-ori/src/corpus/";
+    String pasta = "/home/pablohenrique/Projetos/Java/trabalho-ori/trabalho-ori/src/corpus/";
     
-    String tohash = "/users/yuricampos/Documents/ori/trabalho-ori/trabalho-ori/src/stopwords/stopwords.txt";
-    //String tohash = "/home/pablohenrique/Projetos/Java/trabalho-ori/trabalho-ori/src/stopwords/stopwords.txt";
+    //String tohash = "/users/yuricampos/Documents/ori/trabalho-ori/trabalho-ori/src/stopwords/stopwords.txt";
+    String tohash = "/home/pablohenrique/Projetos/Java/trabalho-ori/trabalho-ori/src/stopwords/stopwords.txt";
+    
+    String saida = "/home/pablohenrique/Projetos/Java/ORI-saida/";
     
     int memoria = 20;
 
@@ -91,7 +93,7 @@ public class ManipulacaoArquivos {
         
         //salvar hashmap de indice -> vocabulario
         File file = new File("indiceVocabulario" + finalArquivo);
-        FileOutputStream f = new FileOutputStream(pasta + file);
+        FileOutputStream f = new FileOutputStream(saida + file);
         ObjectOutputStream s = new ObjectOutputStream(f);
         s.writeObject(indiceVocabulario);
         s.flush();
