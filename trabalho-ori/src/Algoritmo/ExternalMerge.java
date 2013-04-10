@@ -35,10 +35,25 @@ public class ExternalMerge {
            if(!lista2.containsKey(h))
                this.indiceInvertido.put(h, lista1.get(h));
            else{
-               HashMap<String, Integer> aux = new HashMap<>();
-               aux.putAll(lista1.get(h));
-               aux.putAll(lista2.get(h));
-               this.indiceInvertido.put(h, aux);
+               HashMap<String, Integer> aux = new HashMap();
+               HashMap<String, Integer> auxL1 = lista1.get(h);
+               HashMap<String, Integer> auxL2 = lista2.get(h);
+               for(String l : auxL1.keySet()){
+                   if(auxL1.containsKey(l) && auxL2.containsKey(l)){
+                       aux.clear();
+                       Integer ocorrenciaTotal = auxL1.get(l) + auxL2.get(l);
+                       aux.put(l, ocorrenciaTotal);
+                       this.indiceInvertido.put(h,aux);
+                   } else if(auxL1.containsKey(l) && !auxL2.containsKey(l)){
+                       aux.clear();
+                       aux.put(l, auxL1.get(l));
+                       this.indiceInvertido.put(h, aux);
+                   } else if(!auxL1.containsKey(l) && auxL2.containsKey(l)){
+                       aux.clear();
+                       aux.put(l, auxL2.get(l));
+                       this.indiceInvertido.put(h, aux);
+                   }
+               }
                System.gc();
            }
         }
