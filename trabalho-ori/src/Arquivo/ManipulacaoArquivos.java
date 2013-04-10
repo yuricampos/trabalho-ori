@@ -34,15 +34,17 @@ public class ManipulacaoArquivos {
     HashMap<Integer, HashMap<String, Integer>> indiceInvertido = new HashMap<>();
     HashMap<String,String> stopword = new HashMap<>();
     
-    //String pasta = "/users/yuricampos/Documents/ori/trabalho-ori/trabalho-ori/src/corpus/";
-    String pasta = "/home/pablohenrique/Projetos/Java/trabalho-ori/trabalho-ori/src/corpus/";
+    String pasta = "/users/yuricampos/Documents/ori/trabalho-ori/trabalho-ori/src/corpus/";
+   // String pasta = "/home/pablohenrique/Projetos/Java/trabalho-ori/trabalho-ori/src/corpus/";
     
-    //String tohash = "/users/yuricampos/Documents/ori/trabalho-ori/trabalho-ori/src/stopwords/stopwords.txt";
-    String tohash = "/home/pablohenrique/Projetos/Java/trabalho-ori/trabalho-ori/src/stopwords/stopwords.txt";
+    String tohash = "/users/yuricampos/Documents/ori/trabalho-ori/trabalho-ori/src/stopwords/stopwords.txt";
+    //String tohash = "/home/pablohenrique/Projetos/Java/trabalho-ori/trabalho-ori/src/stopwords/stopwords.txt";
     
-    String saida = "/home/pablohenrique/Projetos/Java/ORI-saida/";
+    String saida = "/users/yuricampos/Documents/ori/trabalho-ori/trabalho-ori/src/corpus/";
+    //String saida = "/home/pablohenrique/Projetos/Java/ORI-saida/";
     
     int memoria = 20;
+    float memoriaUsada = 0;
 
     public void lerArquivos() throws ClassNotFoundException, FileNotFoundException, FileNotFoundException, IOException {
         String arquivos;
@@ -97,6 +99,8 @@ public class ManipulacaoArquivos {
         ObjectOutputStream s = new ObjectOutputStream(f);
         s.writeObject(indiceVocabulario);
         s.flush();
+        s.close();
+        f.close();
         indiceVocabulario.clear();
         //salvar hashmap de indice -> lista invertida (doc,ocorrencia)
         File file2 = new File("indiceInvertido" + finalArquivo);
@@ -104,7 +108,11 @@ public class ManipulacaoArquivos {
         ObjectOutputStream s2 = new ObjectOutputStream(f2);
         s2.writeObject(indiceInvertido);
         s2.flush();
+        s2.close();
+        f2.close();
         indiceInvertido.clear();
+        file = null;
+        file2 = null;
         System.gc();
 
     }
