@@ -29,39 +29,42 @@ public class ExternalMerge {
     int finalArquivo = 0;
 
     public void comparar(HashMap<Integer, HashMap<String, Integer>> lista1, HashMap<Integer, HashMap<String, Integer>> lista2) throws FileNotFoundException, IOException {
-        for (Integer h : lista1.keySet()) {
-            if (lista2.containsKey(h)) {
-                HashMap<String, Integer> aux1 = new HashMap();
-                HashMap<String, Integer> aux2 = new HashMap();
-                aux1 = lista1.get(h);
-                aux2 = lista2.get(h);
-                for (String l : aux1.keySet()) {
-                    if (aux2.containsKey(l)) {
-                        int o = aux1.get(l) + aux2.get(l);
-                        HashMap<String, Integer> auxiliar = new HashMap();
-                        auxiliar.put(l, o);
-                        this.indiceInvertidoExternal.put(h, auxiliar);
-                    } else {
-                        this.indiceInvertidoExternal.put(h, aux2);
+        try {
+            for (Integer h : lista1.keySet()) {
+            HashMap<String,Integer> aux1 = lista1.get(h);
+            //lista 2 possui possui key da lista 1
+            if(lista2.containsKey(h)){
+                // pega lista invertida do indice
+                HashMap<String, Integer> aux2 = lista2.get(h);
+                for(String auxArq : aux1.keySet()){
+                    HashMap<String,Integer> auxiliar = new HashMap<String,Integer>();
+                    // verifica se arquivo ja esta nas duas listas
+                    if(aux2.containsKey(auxArq)){
+                        // atualizar ocorrencia
+                        Integer novaOcorrencia = aux1.get(auxArq) + aux2.get(auxArq);
+                        auxiliar.put(auxArq, novaOcorrencia);
+                        indiceInvertidoExternal.put(h, auxiliar);
+                    } else{
+                        indiceInvertidoExternal.put(h, lista1.get(h));
                     }
                 }
-
+            }
+            else{
+                indiceInvertidoExternal.put(h, lista1.get(h));
             }
         }
-        for (Integer h : lista1.keySet()) {
-            if (!this.indiceInvertidoExternal.containsKey(h)) {
-                this.indiceInvertidoExternal.put(h, lista2.get(h));
+        
+        for(Integer h1 : lista2.keySet()){
+            if(!lista1.containsKey(h1)){
+                indiceInvertidoExternal.put(h1, lista1.get(h1));
             }
         }
-
-        for (Integer h : lista2.keySet()) {
-            if (!this.indiceInvertidoExternal.containsKey(h)) {
-                this.indiceInvertidoExternal.put(h, lista2.get(h));
-            }
+        this.salvarHash();
+        
+        } catch (Exception e) {
+            System.out.println("Gagari... Deu erro" + e.toString());
         }
-
-
-        salvarHash();
+        
     }
 
     public void ExternalMergeSort() {
@@ -128,6 +131,7 @@ public class ExternalMerge {
     }
     
         public HashMap<Integer, HashMap<String, Integer>> lerArquivoFinalMerge() throws ClassNotFoundException, FileNotFoundException, FileNotFoundException, IOException {
+        String caminho = "/home/pablohenrique/Projetos/Java/trabalho-ori/trabalho-ori/src/merged/";
         File folder = new File(ManipulacaoArquivos.saidaMerged);
         File[] listaDeArquivos = folder.listFiles();
         HashMap<Integer, HashMap<String, Integer>> hash1 = null;
@@ -157,35 +161,38 @@ public class ExternalMerge {
     public void finalizarMerge() throws ClassNotFoundException, FileNotFoundException, IOException{
         indiceInvertidoExternal.clear();
         indiceInvertidoExternal = lerArquivoFinalMerge();
+        System.out.println("INDICE INVERTIDO EXTERNAL: "+indiceInvertidoExternal.size());
+        HashMap<String, Integer> a1 = indiceInvertidoExternal.get(1);
+        
         salvarBytes();
         
     }
     
-        public void salvarBytes() {
-            SalvaBytes s = new SalvaBytes();
+    public void salvarBytes() {
+        SalvaBytes s = new SalvaBytes();
         for (String key : indiceVocabularioExternal.keySet()) {
             HashMap<String, Integer> listaInv = new HashMap<>();
             int indice = indiceVocabularioExternal.get(key);
             listaInv = indiceInvertidoExternal.get(indice);
             s.save(indice, key, listaInv);
-         //   listaInv.clear();
+            //   listaInv.clear();
         }
     }
     
     
 
-    public void salvarHash() throws FileNotFoundException, IOException {
+    public void salvarHash() throws FileNotFoundException, IOException, InterruptedException {
         finalArquivo++;
         File file2 = new File("indiceInvertido" + finalArquivo + ".merged");
         FileOutputStream f2 = new FileOutputStream(ManipulacaoArquivos.saidaMerged + file2);
         ObjectOutputStream s2 = new ObjectOutputStream(f2);
         s2.writeObject(this.indiceInvertidoExternal);
-        s2.flush();
+        //s2.flush();
         s2.close();
         f2.close();
         this.indiceInvertidoExternal.clear();
-        file2 = null;
-        System.gc();
+        file2 = null;;
+    //    Thread.sleep(4000);
 
     }
     

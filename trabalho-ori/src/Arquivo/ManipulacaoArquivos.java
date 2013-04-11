@@ -33,22 +33,32 @@ public class ManipulacaoArquivos {
     // indice -> lista invertida (doc,ocorrencia)
     HashMap<Integer, HashMap<String, Integer>> indiceInvertido = new HashMap<>();
     HashMap<String, String> stopword = new HashMap<>();
-    public static String dadosEntrada = "/users/yuricampos/Documents/ori/trabalho-ori/trabalho-ori/src/corpus/";
-    //public static String dadosEntrada = "/home/pablohenrique/Projetos/Java/trabalho-ori/trabalho-ori/src/corpus/";
-    public static String dadosStopwords = "/users/yuricampos/Documents/ori/trabalho-ori/trabalho-ori/src/stopwords/stopwords.txt";
-    //public static String dadosStopwords = "/home/pablohenrique/Projetos/Java/trabalho-ori/trabalho-ori/src/stopwords/stopwords.txt";
-    public static String saidaParaMerge = "/users/yuricampos/Documents/ori/trabalho-ori/trabalho-ori/src/corpus/arquivosmerge/";
-    public static String saidaVocabulario = "/users/yuricampos/Documents/ori/trabalho-ori/trabalho-ori/src/corpus/arquivosvocabulario/";
-    public static String saidaMerged = "/users/yuricampos/Documents/ori/trabalho-ori/trabalho-ori/src/corpus/merged/";
-    public static final String saidaFinal = "/users/yuricampos/Documents/ori/trabalho-ori/trabalho-ori/src/corpus/ARQ/";
-    long memoria = 20;
+    
+    //public static String dadosEntrada = "/users/yuricampos/Documents/ori/trabalho-ori/trabalho-ori/src/corpus/";
+    //public static String dadosStopwords = "/users/yuricampos/Documents/ori/trabalho-ori/trabalho-ori/src/stopwords/stopwords.txt";
+    //public static String saidaParaMerge = "/users/yuricampos/Documents/ori/trabalho-ori/trabalho-ori/src/corpus/arquivosmerge/";
+    //public static String saidaVocabulario = "/users/yuricampos/Documents/ori/trabalho-ori/trabalho-ori/src/corpus/arquivosvocabulario/";
+    //public static String saidaMerged = "/users/yuricampos/Documents/ori/trabalho-ori/trabalho-ori/src/corpus/merged/";
+    //public static final String saidaFinal = "/users/yuricampos/Documents/ori/trabalho-ori/trabalho-ori/src/corpus/ARQ/";
+    
+    public static String dadosEntrada = "/home/pablohenrique/Projetos/Java/trabalho-ori/trabalho-ori/src/corpus/";
+    public static String dadosStopwords = "/home/pablohenrique/Projetos/Java/trabalho-ori/trabalho-ori/src/stopwords/stopwords.txt";
+    public static String saidaParaMerge = "/home/pablohenrique/Projetos/Java/trabalho-ori/trabalho-ori/src/arquivosmerge/";
+    public static String saidaVocabulario = "/home/pablohenrique/Projetos/Java/trabalho-ori/trabalho-ori/src/arquivosvocabulario/";
+    public static String saidaMerged = "/home/pablohenrique/Projetos/Java/trabalho-ori/trabalho-ori/src/merged/";
+    public static final String saidaFinal = "/home/pablohenrique/Projetos/Java/trabalho-ori/trabalho-ori/src/ARQ/";
+    
+    //long memoria = 20;
+    long memoria = 5;
     long memoriaUsada = 0;
 
     public void lerArquivos() throws ClassNotFoundException, FileNotFoundException, FileNotFoundException, IOException {
+        ///*
         deleteVocabularioDisco();
         deleteFinalFiles();
         deleteAllMerge();
         deleteMerged();
+        //*/
         String arquivos;
         File folder = new File(dadosEntrada);
         this.stopword = toHash(dadosStopwords);
@@ -91,49 +101,48 @@ public class ManipulacaoArquivos {
 
         //s.close();
     }
-
-    public void deleteVocabularioDisco() {
-        File folder = new File(saidaVocabulario);
+    
+    public void deleteTemplate(File folder) throws IOException{
+        if(!folder.exists()){
+            folder.mkdir();
+            return;
+        }
+        
         File[] listaDeArquivos = folder.listFiles();
+        if(listaDeArquivos.length == 0)
+            return;
+        
         for (int i = 0; i < listaDeArquivos.length; i++) {
             listaDeArquivos[i].delete();
         }
     }
 
-    public void deleteFinalFiles() {
-        File folder = new File(saidaFinal);
-        File[] listaDeArquivos = folder.listFiles();
-        for (int i = 0; i < listaDeArquivos.length; i++) {
-            listaDeArquivos[i].delete();
-        }
+    public void deleteVocabularioDisco() throws IOException {
+        this.deleteTemplate(new File(saidaVocabulario));
     }
 
-    public void deleteAllMerge() {
-        File folder = new File(saidaParaMerge);
-        File[] listaDeArquivos = folder.listFiles();
-        for (int i = 0; i < listaDeArquivos.length; i++) {
-            listaDeArquivos[i].delete();
-        }
+    public void deleteFinalFiles() throws IOException {
+        this.deleteTemplate(new File(saidaFinal));
     }
 
-    public void deleteMerged() {
-        File folder2 = new File(saidaMerged);
-        File[] listaDeArquivos2 = folder2.listFiles();
-        for (int i = 0; i < listaDeArquivos2.length; i++) {
-            listaDeArquivos2[i].delete();
-        }
+    public void deleteAllMerge() throws IOException {
+        this.deleteTemplate(new File(saidaParaMerge));
+    }
+
+    public void deleteMerged() throws IOException {
+        this.deleteTemplate(new File(saidaMerged));
     }
 
     public void salvarHash() throws FileNotFoundException, IOException {
-        finalArquivo++;
-        File file2 = new File("indiceInvertido" + finalArquivo + ".inv");
-        FileOutputStream f2 = new FileOutputStream(saidaParaMerge + file2);
+        this.finalArquivo++;
+        File file2 = new File("indiceInvertido" + this.finalArquivo + ".inv");
+        FileOutputStream f2 = new FileOutputStream(this.saidaParaMerge + file2);
         ObjectOutputStream s2 = new ObjectOutputStream(f2);
-        s2.writeObject(indiceInvertido);
+        s2.writeObject(this.indiceInvertido);
         s2.flush();
         s2.close();
         f2.close();
-        indiceInvertido.clear();
+        this.indiceInvertido.clear();
         file2 = null;
         System.gc();
 

@@ -20,10 +20,8 @@ public class Main {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        ExternalMerge me1 = new ExternalMerge();
-     
-        
         ManipulacaoArquivos ma = new ManipulacaoArquivos();
+        ExternalMerge me1 = new ExternalMerge();
         try {
             
             ma.lerArquivos();

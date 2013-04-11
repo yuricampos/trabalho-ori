@@ -138,10 +138,13 @@ public class SalvaBytes {
     
     public void save(int index, String word, HashMap<String, Integer> invIndex){
         try {
+            if(invIndex == null)
+                return;
             this.saveInt(index, "index");
             this.saveString(word);
             this.saveInt(index, "coisa");
             this.saveHashMap(invIndex);
+            
         } catch (Exception e) {
             System.out.println("Erro ao salvar informacoes: " + e.toString());
         }
