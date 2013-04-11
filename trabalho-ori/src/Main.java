@@ -27,8 +27,6 @@ public class Main {
         try {
             
             ma.lerArquivos();
-            ExternalMerge me = new ExternalMerge();
-            me.ExternalMergeSort();
         } catch (Exception ex) {
             
         } 

@@ -24,7 +24,7 @@ import java.util.HashMap;
  */
 public class SalvaBytes {
     //private final String DIRECTORY_ROOT = "/home/pablohenrique/Projetos/Java/ORI-saida/";
-    private final String DIRECTORY_ROOT = "/users/yuricampos/Documents/ori/trabalho-ori/trabalho-ori/src/corpus/ARQ/";
+    public static final String DIRECTORY_ROOT = "/users/yuricampos/Documents/ori/trabalho-ori/trabalho-ori/src/corpus/ARQ/";
     private final String FILE_INDEX = DIRECTORY_ROOT + "indice.dat";
     private final String FILE_VOCABULARY = DIRECTORY_ROOT + "vocabulario.dat";
     private final String FILE_INDEXINVFILE = DIRECTORY_ROOT + "indexinvfile.dat";

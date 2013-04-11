@@ -1,5 +1,6 @@
 package Arquivo;
 
+import Algoritmo.ExternalMerge;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -29,6 +30,8 @@ public class ManipulacaoArquivos {
     //private SalvaBytes s = new SalvaBytes();
     // Palavra -> Indice (tem que gerar 2 arquivos)
     HashMap<String, Integer> indiceVocabulario = new HashMap<>();
+    
+    
     // indice -> lista invertida (doc,ocorrencia)
     HashMap<Integer, HashMap<String, Integer>> indiceInvertido = new HashMap<>();
     HashMap<String, String> stopword = new HashMap<>();
@@ -37,12 +40,13 @@ public class ManipulacaoArquivos {
     String tohash = "/users/yuricampos/Documents/ori/trabalho-ori/trabalho-ori/src/stopwords/stopwords.txt";
     //String tohash = "/home/pablohenrique/Projetos/Java/trabalho-ori/trabalho-ori/src/stopwords/stopwords.txt";
     String saida = "/users/yuricampos/Documents/ori/trabalho-ori/trabalho-ori/src/corpus/arquivosmerge/";
-    String saida2 = "/users/yuricampos/Documents/ori/trabalho-ori/trabalho-ori/src/corpus/arquivosvocabulario/";
+    public final static String saida2 = "/users/yuricampos/Documents/ori/trabalho-ori/trabalho-ori/src/corpus/arquivosvocabulario/";
     //String saida = "/home/pablohenrique/Projetos/Java/ORI-saida/";
     long memoria = 20;
     long memoriaUsada = 0;
 
     public void lerArquivos() throws ClassNotFoundException, FileNotFoundException, FileNotFoundException, IOException {
+        deleteFiles();
         String arquivos;
         File folder = new File(pasta);
         this.stopword = toHash(tohash);
@@ -79,7 +83,19 @@ public class ManipulacaoArquivos {
         }
         salvarHash();
         salvarVocabulario();
+        ExternalMerge me = new ExternalMerge();
+        me.setindiceVocabularioExternal(indiceVocabulario);
+        me.ExternalMergeSort();
+        
         //s.close();
+    }
+    
+        public void deleteFiles(){
+        File folder = new File(saida2);
+        File[] listaDeArquivos = folder.listFiles();
+                for (int i = 0; i < listaDeArquivos.length; i++) {
+            listaDeArquivos[i].delete();
+        }
     }
 
     public void salvarHash() throws FileNotFoundException, IOException {
@@ -105,9 +121,6 @@ public class ManipulacaoArquivos {
         s.flush();
         s.close();
         f.close();
-        file = null;
-        System.gc();
-        indiceVocabulario.clear();
     }
 
     public void salvarPalavra(String arquivo) {
@@ -194,6 +207,10 @@ public class ManipulacaoArquivos {
         } catch (Exception e) {
             return null;
         }
+    }
+    
+    public HashMap<String, Integer> getindiceVocabulario(){
+        return this.indiceVocabulario;
     }
 /*
     public void salvarBytes() {

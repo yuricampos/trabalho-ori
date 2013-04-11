@@ -4,6 +4,9 @@
  */
 package Algoritmo;
 
+import Arquivo.ManipulacaoArquivos;
+import static Arquivo.ManipulacaoArquivos.saida2;
+import Arquivo.SalvaBytes;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -20,29 +23,36 @@ import java.util.HashMap;
 public class ExternalMerge {
 
     private HashMap<Integer, HashMap<String, Integer>> indiceInvertidoExternal = new HashMap<>();
+    ManipulacaoArquivos ma = new ManipulacaoArquivos();
+    HashMap<String, Integer> indiceVocabularioExternal;
     private String saida = "/users/yuricampos/Documents/ori/trabalho-ori/trabalho-ori/src/corpus/arquivosmerge/";
     private String saida2 = "/users/yuricampos/Documents/ori/trabalho-ori/trabalho-ori/src/corpus/merged/";
+    
+    public void setindiceVocabularioExternal(HashMap<String, Integer> indice){
+        this.indiceVocabularioExternal = indice;
+    }
+
     //private String saida = "/home/pablohenrique/Projetos/Java/ORI-saida/";
     int finalArquivo = 0;
 
     public void comparar(HashMap<Integer, HashMap<String, Integer>> lista1, HashMap<Integer, HashMap<String, Integer>> lista2) throws FileNotFoundException, IOException {
-        for (Integer h : lista1.keySet()){
-            if(lista2.containsKey(h)){
+        for (Integer h : lista1.keySet()) {
+            if (lista2.containsKey(h)) {
                 HashMap<String, Integer> aux1 = new HashMap();
                 HashMap<String, Integer> aux2 = new HashMap();
                 aux1 = lista1.get(h);
                 aux2 = lista2.get(h);
-                for(String l : aux1.keySet()){
-                    if(aux2.containsKey(l)){
+                for (String l : aux1.keySet()) {
+                    if (aux2.containsKey(l)) {
                         int o = aux1.get(l) + aux2.get(l);
                         HashMap<String, Integer> auxiliar = new HashMap();
                         auxiliar.put(l, o);
-                        this.indiceInvertidoExternal.put(h,auxiliar);
-                    } else{
+                        this.indiceInvertidoExternal.put(h, auxiliar);
+                    } else {
                         this.indiceInvertidoExternal.put(h, aux2);
                     }
                 }
-                
+
             }
         }
         for (Integer h : lista1.keySet()) {
@@ -66,8 +76,6 @@ public class ExternalMerge {
          this.indiceInvertido.put(h, lista2.get(h));
          */
     }
-    
-    
 
     public void teste() {
         HashMap<String, Integer> aux = new HashMap();
@@ -111,55 +119,107 @@ public class ExternalMerge {
         }
         lerArquivosMerge();
     }
-    
-        public void lerArquivosMerge() throws ClassNotFoundException, FileNotFoundException, FileNotFoundException, IOException {
+
+    public void lerArquivosMerge() throws ClassNotFoundException, FileNotFoundException, FileNotFoundException, IOException {
         File folder = new File(saida2);
         File[] listaDeArquivos = folder.listFiles();
         deleteAllMerge();
-        if(listaDeArquivos.length == 1){
-            System.out.println("FINALIZOU!");
-        } else{
-                    for (int i = 0; i < listaDeArquivos.length - 1; i = i + 2) {
-            String arquivos = listaDeArquivos[i].getName();
-            if (arquivos.endsWith(".merged")) {
-                //Le o arquivo inteiro
-                ObjectInputStream s1 = new ObjectInputStream(new FileInputStream(new File(listaDeArquivos[i].toString())));
-                //retorna um objeto desse aqui \/
-                HashMap<Integer, HashMap<String, Integer>> hash1 = (HashMap<Integer, HashMap<String, Integer>>) s1.readObject();
-                s1 = new ObjectInputStream(new FileInputStream(new File(listaDeArquivos[i + 1].toString())));
-                HashMap<Integer, HashMap<String, Integer>> hash2 = (HashMap<Integer, HashMap<String, Integer>>) s1.readObject();
-                
-                listaDeArquivos[i].delete();
-                listaDeArquivos[i+1].delete();
-                //Chama outra funcao
-                this.comparar(hash1, hash2);
-                s1.close();
-            }
+        if (listaDeArquivos.length == 1) {
+            finalizarMerge();
+        } else {
+            for (int i = 0; i < listaDeArquivos.length - 1; i = i + 2) {
+                String arquivos = listaDeArquivos[i].getName();
+                if (arquivos.endsWith(".merged")) {
+                    //Le o arquivo inteiro
+                    ObjectInputStream s1 = new ObjectInputStream(new FileInputStream(new File(listaDeArquivos[i].toString())));
+                    //retorna um objeto desse aqui \/
+                    HashMap<Integer, HashMap<String, Integer>> hash1 = (HashMap<Integer, HashMap<String, Integer>>) s1.readObject();
+                    s1 = new ObjectInputStream(new FileInputStream(new File(listaDeArquivos[i + 1].toString())));
+                    HashMap<Integer, HashMap<String, Integer>> hash2 = (HashMap<Integer, HashMap<String, Integer>>) s1.readObject();
 
-        }
-        lerArquivosMerge();
+                    listaDeArquivos[i].delete();
+                    listaDeArquivos[i + 1].delete();
+                    //Chama outra funcao
+                    this.comparar(hash1, hash2);
+                    s1.close();
+                }
+
+            }
+            lerArquivosMerge();
         }
 
     }
+    
+        public HashMap<Integer, HashMap<String, Integer>> lerArquivoFinalMerge() throws ClassNotFoundException, FileNotFoundException, FileNotFoundException, IOException {
+        File folder = new File(saida2);
+        File[] listaDeArquivos = folder.listFiles();
+        HashMap<Integer, HashMap<String, Integer>> hash1 = null;
+            for (int i = 0; i < listaDeArquivos.length; i++) {
+                String arquivos = listaDeArquivos[i].getName();
+                if (arquivos.endsWith(".merged")) {
+                    //Le o arquivo inteiro
+                    ObjectInputStream s1 = new ObjectInputStream(new FileInputStream(new File(listaDeArquivos[i].toString())));
+                    //retorna um objeto desse aqui \/
+                    hash1 = (HashMap<Integer, HashMap<String, Integer>>) s1.readObject();
+
+                    s1.close();
+                }
+
+            }
+            
+        
+        return hash1;
+        
+
+    }
+    
+
+        
+    
+    public void finalizarMerge() throws ClassNotFoundException, FileNotFoundException, IOException{
+        deleteFiles();
+        SalvaBytes b = new SalvaBytes();
+        indiceInvertidoExternal.clear();
+        System.out.println(indiceVocabularioExternal.size());
+        indiceInvertidoExternal = lerArquivoFinalMerge();
+        System.out.println(indiceInvertidoExternal.size());
+    }
+    
+        public void salvarBytes() {
+            SalvaBytes s = new SalvaBytes();
+        for (String key : indiceVocabularioExternal.keySet()) {
+            HashMap<String, Integer> listaInv = new HashMap<>();
+            int indice = indiceVocabularioExternal.get(key);
+            listaInv = indiceInvertidoExternal.get(indice);
+            s.save(indice, key, listaInv);
+            listaInv.clear();
+        }
+    }
+    
+    
+    public void deleteFiles(){
+        File folder = new File(SalvaBytes.DIRECTORY_ROOT);
+        File[] listaDeArquivos = folder.listFiles();
+                for (int i = 0; i < listaDeArquivos.length; i++) {
+            listaDeArquivos[i].delete();
+        }
+    }
 
     public void deleteAllMerge() {
-        File folder = new File("/users/yuricampos/Documents/ori/trabalho-ori/trabalho-ori/src/corpus/arquivosmerge/");
+        File folder = new File(saida);
         File[] listaDeArquivos = folder.listFiles();
         for (int i = 0; i < listaDeArquivos.length; i++) {
             listaDeArquivos[i].delete();
         }
     }
-        
-        public void deleteMerged(){
-                  File folder2 = new File("/users/yuricampos/Documents/ori/trabalho-ori/trabalho-ori/src/corpus/merged/");
+
+    public void deleteMerged() {
+        File folder2 = new File(saida2);
         File[] listaDeArquivos2 = folder2.listFiles();
         for (int i = 0; i < listaDeArquivos2.length; i++) {
             listaDeArquivos2[i].delete();
-        }  
         }
-
-
-    
+    }
 
     public void salvarHash() throws FileNotFoundException, IOException {
         finalArquivo++;
