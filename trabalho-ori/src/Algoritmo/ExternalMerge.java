@@ -18,8 +18,8 @@ import java.util.HashMap;
 public class ExternalMerge {
     private HashMap<Integer, HashMap<String, Integer>> indiceInvertido = new HashMap<>();
     
-    //private String saida = "/users/yuricampos/Documents/ori/trabalho-ori/trabalho-ori/src/corpus/";
-    private String saida = "/home/pablohenrique/Projetos/Java/ORI-saida/";
+    private String saida = "/users/yuricampos/Documents/ori/trabalho-ori/trabalho-ori/src/corpus/ARQ/";
+    //private String saida = "/home/pablohenrique/Projetos/Java/ORI-saida/";
     
     private String indiceInvertidoResultante = this.saida + "indiceInvResult";
     private String indiceInvertidoFinal = this.saida + "indiceInvFinal";
@@ -57,11 +57,11 @@ public class ExternalMerge {
                System.gc();
            }
         }
-        
+        /*
         for(Integer h : lista2.keySet())
            if(!this.indiceInvertido.containsKey(h))
                this.indiceInvertido.put(h, lista2.get(h));
-        
+        */
     }
     
     public void ExternalMergeSort(String pasta){
@@ -78,7 +78,9 @@ public class ExternalMerge {
         File[] listaDeArquivos = folder.listFiles();
         
         for (int i = 0; i < listaDeArquivos.length-1; i++) {
-            //Le o arquivo inteiro
+            String arquivos = listaDeArquivos[i].getName();
+            if(arquivos.endsWith(".inv")){
+                            //Le o arquivo inteiro
             ObjectInputStream s1 = new ObjectInputStream(new FileInputStream(new File(listaDeArquivos[i].toString())));
             //retorna um objeto desse aqui \/
             HashMap<Integer, HashMap<String, Integer>> hash1 = (HashMap<Integer, HashMap<String, Integer>>) s1.readObject();
@@ -88,6 +90,8 @@ public class ExternalMerge {
             this.comparar(hash1, hash2);
             
             s1.close();
+            }
+
         }
     }
     

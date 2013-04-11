@@ -26,7 +26,7 @@ public class ManipulacaoArquivos {
     int indicePalavra = -1;
     int qtd = 1;
     int MegaBytes = 10241024;
-    private SalvaBytes s = new SalvaBytes();
+    //private SalvaBytes s = new SalvaBytes();
     // Palavra -> Indice (tem que gerar 2 arquivos)
     HashMap<String, Integer> indiceVocabulario = new HashMap<>();
     // indice -> lista invertida (doc,ocorrencia)
@@ -36,7 +36,7 @@ public class ManipulacaoArquivos {
     //String pasta = "/home/pablohenrique/Projetos/Java/trabalho-ori/trabalho-ori/src/corpus/";
     String tohash = "/users/yuricampos/Documents/ori/trabalho-ori/trabalho-ori/src/stopwords/stopwords.txt";
     //String tohash = "/home/pablohenrique/Projetos/Java/trabalho-ori/trabalho-ori/src/stopwords/stopwords.txt";
-    String saida = "/users/yuricampos/Documents/ori/trabalho-ori/trabalho-ori/src/corpus/";
+    String saida = "/users/yuricampos/Documents/ori/trabalho-ori/trabalho-ori/src/corpus/ARQ/";
     //String saida = "/home/pablohenrique/Projetos/Java/ORI-saida/";
     long memoria = 20;
     long memoriaUsada = 0;
@@ -78,13 +78,13 @@ public class ManipulacaoArquivos {
         }
         salvarHash();
         salvarVocabulario();
-        s.close();
+        //s.close();
     }
 
     public void salvarHash() throws FileNotFoundException, IOException {
         finalArquivo++;
-        File file2 = new File("indiceInvertido" + finalArquivo);
-        FileOutputStream f2 = new FileOutputStream(pasta + file2);
+        File file2 = new File("indiceInvertido" + finalArquivo + ".inv");
+        FileOutputStream f2 = new FileOutputStream(saida + file2);
         ObjectOutputStream s2 = new ObjectOutputStream(f2);
         s2.writeObject(indiceInvertido);
         s2.flush();
@@ -97,7 +97,7 @@ public class ManipulacaoArquivos {
     }
 
     public void salvarVocabulario() throws FileNotFoundException, IOException {
-        File file = new File("indiceVocabulario");
+        File file = new File("indiceVocabulario"+".inv");
         FileOutputStream f = new FileOutputStream(saida + file);
         ObjectOutputStream s = new ObjectOutputStream(f);
         s.writeObject(indiceVocabulario);
@@ -187,7 +187,7 @@ public class ManipulacaoArquivos {
             return null;
         }
     }
-
+/*
     public void salvarBytes() {
         for (String key : indiceVocabulario.keySet()) {
             HashMap<String, Integer> listaInv = new HashMap<>();
@@ -200,4 +200,5 @@ public class ManipulacaoArquivos {
         indiceVocabulario.clear();
         indiceInvertido.clear();
     }
+*/
 }

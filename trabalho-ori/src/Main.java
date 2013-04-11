@@ -1,4 +1,5 @@
 
+import Algoritmo.ExternalMerge;
 import Arquivo.ManipulacaoArquivos;
 
 
@@ -23,6 +24,8 @@ public class Main {
         ManipulacaoArquivos ma = new ManipulacaoArquivos();
         try {
             ma.lerArquivos();
+            ExternalMerge me = new ExternalMerge();
+            me.ExternalMergeSort("/users/yuricampos/Documents/ori/trabalho-ori/trabalho-ori/src/corpus/ARQ/");
         } catch (Exception ex) {
             
         } 
