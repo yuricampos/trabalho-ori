@@ -5,7 +5,6 @@
 package Algoritmo;
 
 import Arquivo.ManipulacaoArquivos;
-import static Arquivo.ManipulacaoArquivos.saida2;
 import Arquivo.SalvaBytes;
 import java.io.File;
 import java.io.FileInputStream;
@@ -25,14 +24,11 @@ public class ExternalMerge {
     private HashMap<Integer, HashMap<String, Integer>> indiceInvertidoExternal = new HashMap<>();
     ManipulacaoArquivos ma = new ManipulacaoArquivos();
     HashMap<String, Integer> indiceVocabularioExternal;
-    private String saida = "/users/yuricampos/Documents/ori/trabalho-ori/trabalho-ori/src/corpus/arquivosmerge/";
-    private String saida2 = "/users/yuricampos/Documents/ori/trabalho-ori/trabalho-ori/src/corpus/merged/";
     
     public void setindiceVocabularioExternal(HashMap<String, Integer> indice){
         this.indiceVocabularioExternal = indice;
     }
 
-    //private String saida = "/home/pablohenrique/Projetos/Java/ORI-saida/";
     int finalArquivo = 0;
 
     public void comparar(HashMap<Integer, HashMap<String, Integer>> lista1, HashMap<Integer, HashMap<String, Integer>> lista2) throws FileNotFoundException, IOException {
@@ -98,7 +94,7 @@ public class ExternalMerge {
 
     //Recebe uma string com o caminho
     public void lerArquivos() throws ClassNotFoundException, FileNotFoundException, FileNotFoundException, IOException {
-        File folder = new File(saida);
+        File folder = new File(ManipulacaoArquivos.saidaParaMerge);
         File[] listaDeArquivos = folder.listFiles();
 
         for (int i = 0; i < listaDeArquivos.length - 1; i = i + 2) {
@@ -121,9 +117,10 @@ public class ExternalMerge {
     }
 
     public void lerArquivosMerge() throws ClassNotFoundException, FileNotFoundException, FileNotFoundException, IOException {
-        File folder = new File(saida2);
+        File folder = new File(ManipulacaoArquivos.saidaMerged);
         File[] listaDeArquivos = folder.listFiles();
-        deleteAllMerge();
+        ManipulacaoArquivos ma = new ManipulacaoArquivos();
+        ma.deleteAllMerge();
         if (listaDeArquivos.length == 1) {
             finalizarMerge();
         } else {
@@ -151,7 +148,7 @@ public class ExternalMerge {
     }
     
         public HashMap<Integer, HashMap<String, Integer>> lerArquivoFinalMerge() throws ClassNotFoundException, FileNotFoundException, FileNotFoundException, IOException {
-        File folder = new File(saida2);
+        File folder = new File(ManipulacaoArquivos.saidaMerged);
         File[] listaDeArquivos = folder.listFiles();
         HashMap<Integer, HashMap<String, Integer>> hash1 = null;
             for (int i = 0; i < listaDeArquivos.length; i++) {
@@ -177,7 +174,6 @@ public class ExternalMerge {
         
     
     public void finalizarMerge() throws ClassNotFoundException, FileNotFoundException, IOException{
-        deleteFiles();
         SalvaBytes b = new SalvaBytes();
         indiceInvertidoExternal.clear();
         System.out.println(indiceVocabularioExternal.size());
@@ -197,34 +193,11 @@ public class ExternalMerge {
     }
     
     
-    public void deleteFiles(){
-        File folder = new File(SalvaBytes.DIRECTORY_ROOT);
-        File[] listaDeArquivos = folder.listFiles();
-                for (int i = 0; i < listaDeArquivos.length; i++) {
-            listaDeArquivos[i].delete();
-        }
-    }
-
-    public void deleteAllMerge() {
-        File folder = new File(saida);
-        File[] listaDeArquivos = folder.listFiles();
-        for (int i = 0; i < listaDeArquivos.length; i++) {
-            listaDeArquivos[i].delete();
-        }
-    }
-
-    public void deleteMerged() {
-        File folder2 = new File(saida2);
-        File[] listaDeArquivos2 = folder2.listFiles();
-        for (int i = 0; i < listaDeArquivos2.length; i++) {
-            listaDeArquivos2[i].delete();
-        }
-    }
 
     public void salvarHash() throws FileNotFoundException, IOException {
         finalArquivo++;
         File file2 = new File("indiceInvertido" + finalArquivo + ".merged");
-        FileOutputStream f2 = new FileOutputStream(saida2 + file2);
+        FileOutputStream f2 = new FileOutputStream(ManipulacaoArquivos.saidaMerged + file2);
         ObjectOutputStream s2 = new ObjectOutputStream(f2);
         s2.writeObject(this.indiceInvertidoExternal);
         s2.flush();

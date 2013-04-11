@@ -23,12 +23,10 @@ import java.util.HashMap;
  * @author pablohenrique
  */
 public class SalvaBytes {
-    //private final String DIRECTORY_ROOT = "/home/pablohenrique/Projetos/Java/ORI-saida/";
-    public static final String DIRECTORY_ROOT = "/users/yuricampos/Documents/ori/trabalho-ori/trabalho-ori/src/corpus/ARQ/";
-    private final String FILE_INDEX = DIRECTORY_ROOT + "indice.dat";
-    private final String FILE_VOCABULARY = DIRECTORY_ROOT + "vocabulario.dat";
-    private final String FILE_INDEXINVFILE = DIRECTORY_ROOT + "indexinvfile.dat";
-    private final String FILE_INVFILE = DIRECTORY_ROOT + "invfile.dat";
+    private final String FILE_INDEX = ManipulacaoArquivos.saidaFinal + "indice.dat";
+    private final String FILE_VOCABULARY = ManipulacaoArquivos.saidaFinal + "vocabulario.dat";
+    private final String FILE_INDEXINVFILE = ManipulacaoArquivos.saidaFinal + "indexinvfile.dat";
+    private final String FILE_INVFILE = ManipulacaoArquivos.saidaFinal + "invfile.dat";
     private FileOutputStream fosI;
     private FileOutputStream fosV;
     private FileOutputStream fosII;
