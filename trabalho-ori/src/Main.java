@@ -18,14 +18,17 @@ public class Main {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-
+        ExternalMerge me1 = new ExternalMerge();
+        me1.deleteAllMerge();
+        me1.deleteMerged();
      
         
         ManipulacaoArquivos ma = new ManipulacaoArquivos();
         try {
+            
             ma.lerArquivos();
             ExternalMerge me = new ExternalMerge();
-            me.ExternalMergeSort("/users/yuricampos/Documents/ori/trabalho-ori/trabalho-ori/src/corpus/ARQ/");
+            me.ExternalMergeSort();
         } catch (Exception ex) {
             
         } 

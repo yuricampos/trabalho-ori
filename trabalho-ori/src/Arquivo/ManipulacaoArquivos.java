@@ -36,7 +36,8 @@ public class ManipulacaoArquivos {
     //String pasta = "/home/pablohenrique/Projetos/Java/trabalho-ori/trabalho-ori/src/corpus/";
     String tohash = "/users/yuricampos/Documents/ori/trabalho-ori/trabalho-ori/src/stopwords/stopwords.txt";
     //String tohash = "/home/pablohenrique/Projetos/Java/trabalho-ori/trabalho-ori/src/stopwords/stopwords.txt";
-    String saida = "/users/yuricampos/Documents/ori/trabalho-ori/trabalho-ori/src/corpus/ARQ/";
+    String saida = "/users/yuricampos/Documents/ori/trabalho-ori/trabalho-ori/src/corpus/arquivosmerge/";
+    String saida2 = "/users/yuricampos/Documents/ori/trabalho-ori/trabalho-ori/src/corpus/arquivosvocabulario/";
     //String saida = "/home/pablohenrique/Projetos/Java/ORI-saida/";
     long memoria = 20;
     long memoriaUsada = 0;
@@ -98,7 +99,7 @@ public class ManipulacaoArquivos {
 
     public void salvarVocabulario() throws FileNotFoundException, IOException {
         File file = new File("indiceVocabulario"+".inv");
-        FileOutputStream f = new FileOutputStream(saida + file);
+        FileOutputStream f = new FileOutputStream(saida2 + file);
         ObjectOutputStream s = new ObjectOutputStream(f);
         s.writeObject(indiceVocabulario);
         s.flush();
@@ -137,7 +138,7 @@ public class ManipulacaoArquivos {
     public void insertHash(String palavra, String arquivo) {
         HashMap<String, Integer> lista = new HashMap<>();
         if (indiceVocabulario.containsKey(palavra)) {
-            Integer indice = indiceVocabulario.get(palavra);
+            Integer indice = consultaIndiceVocabulario(palavra);
             if (indiceInvertido.containsKey(indice)) {
                 lista = indiceInvertido.get(indice);
                 if (lista.containsKey(arquivo)) {
@@ -145,17 +146,24 @@ public class ManipulacaoArquivos {
                     ocorrencia++;
                     lista.put(arquivo, ocorrencia);
                     indiceInvertido.put(indice, lista);
+                    lista.clear();
                 } else {
                     lista.put(arquivo, 1);
                     indiceInvertido.put(indice, lista);
+                    lista.clear();
                 }
             }
         } else {
             indicePalavra++;
+            
             indiceVocabulario.put(palavra, indicePalavra);
             lista.put(arquivo, 1);
             indiceInvertido.put(indicePalavra, lista);
         }
+    }
+    
+    public int consultaIndiceVocabulario(String palavra){
+        return  indiceVocabulario.get(palavra);
     }
 
     public HashMap<String, String> toHash(String filePath) {
