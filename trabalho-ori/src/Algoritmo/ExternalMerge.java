@@ -25,9 +25,6 @@ public class ExternalMerge {
     ManipulacaoArquivos ma = new ManipulacaoArquivos();
     HashMap<String, Integer> indiceVocabularioExternal;
     
-    public void setindiceVocabularioExternal(HashMap<String, Integer> indice){
-        this.indiceVocabularioExternal = indice;
-    }
 
     int finalArquivo = 0;
 
@@ -63,25 +60,8 @@ public class ExternalMerge {
             }
         }
 
-        //  }
 
         salvarHash();
-        /*
-         for(Integer h : lista2.keySet())
-         if(!this.indiceInvertido.containsKey(h))
-         this.indiceInvertido.put(h, lista2.get(h));
-         */
-    }
-
-    public void teste() {
-        HashMap<String, Integer> aux = new HashMap();
-        for (int i = 0; i < 999; i++) {
-            String letter = "a" + i;
-            aux.put(letter, i);
-        }
-        for (int i = 0; i < 999; i++) {
-            indiceInvertidoExternal.put(i, aux);
-        }
     }
 
     public void ExternalMergeSort() {
@@ -167,6 +147,7 @@ public class ExternalMerge {
         
         return hash1;
         
+        
 
     }
     
@@ -174,11 +155,10 @@ public class ExternalMerge {
         
     
     public void finalizarMerge() throws ClassNotFoundException, FileNotFoundException, IOException{
-        SalvaBytes b = new SalvaBytes();
         indiceInvertidoExternal.clear();
-        System.out.println(indiceVocabularioExternal.size());
         indiceInvertidoExternal = lerArquivoFinalMerge();
-        System.out.println(indiceInvertidoExternal.size());
+        salvarBytes();
+        
     }
     
         public void salvarBytes() {
@@ -188,7 +168,7 @@ public class ExternalMerge {
             int indice = indiceVocabularioExternal.get(key);
             listaInv = indiceInvertidoExternal.get(indice);
             s.save(indice, key, listaInv);
-            listaInv.clear();
+         //   listaInv.clear();
         }
     }
     
@@ -208,4 +188,9 @@ public class ExternalMerge {
         System.gc();
 
     }
+    
+        public void setindiceVocabularioExternal(HashMap<String, Integer> indice){
+        this.indiceVocabularioExternal = indice;
+    }
+
 }
